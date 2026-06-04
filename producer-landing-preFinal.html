@@ -1,0 +1,1147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PROIIRAPS — Producción Musical</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #050505;
+    --surface: #111111;
+    --surface2: #181818;
+    --primary: #FF2020;
+    --primary-dim: rgba(255,32,32,0.12);
+    --text: #FFFFFF;
+    --muted: #8A8A8A;
+    --border: rgba(255,255,255,0.06);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 3px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 2px; }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 24px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(to bottom, rgba(5,5,5,0.95), transparent);
+    backdrop-filter: blur(0px);
+    transition: backdrop-filter 0.3s, background 0.3s;
+  }
+  nav.scrolled {
+    background: rgba(5,5,5,0.92);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 3px;
+    color: var(--text);
+    text-decoration: none;
+  }
+  .nav-logo span { color: var(--primary); }
+  .nav-links {
+    display: flex;
+    gap: 36px;
+    list-style: none;
+  }
+  .nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--text); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    padding: 0 24px;
+  }
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 70% 50%, rgba(255,32,32,0.07) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 60% at 20% 80%, rgba(255,32,32,0.04) 0%, transparent 60%);
+  }
+  .hero-noise {
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    opacity: 0.4;
+    pointer-events: none;
+  }
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 1100px;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+  }
+  .hero-text {
+    text-align: left;
+  }
+  .hero-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(64px, 15vw, 160px);
+    line-height: 0.85;
+    letter-spacing: -2px;
+    margin-bottom: 16px;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.15s ease forwards;
+  }
+  .hero-subtitle {
+    font-size: 16px;
+    font-weight: 400;
+    color: var(--muted);
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    margin-bottom: 32px;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.3s ease forwards;
+  }
+  .hero-sub-sep {
+    display: inline-block;
+    margin: 0 12px;
+    color: var(--border);
+  }
+  .hero-genres {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 48px;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.4s ease forwards;
+  }
+  .hero-genre {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 6px 14px;
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    transition: all 0.25s ease;
+  }
+  .hero-genre:hover {
+    color: var(--text);
+    border-color: rgba(255,255,255,0.15);
+    background: var(--surface);
+  }
+  .hero-ctas {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.5s ease forwards;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 36px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-decoration: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    border: none;
+    font-family: 'Inter', sans-serif;
+  }
+  .btn-primary {
+    background: var(--primary);
+    color: #fff;
+  }
+  .btn-primary:hover {
+    background: #ff4040;
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(255,32,32,0.35);
+  }
+  .btn-outline {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid rgba(255,255,255,0.15);
+  }
+  .btn-outline:hover {
+    border-color: rgba(255,255,255,0.4);
+    transform: translateY(-2px);
+    background: rgba(255,255,255,0.03);
+  }
+
+  /* HERO PHOTO */
+  .hero-photo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    opacity: 0;
+    animation: fadeIn 1s 0.3s ease forwards;
+  }
+  .hero-photo-frame {
+    width: 320px;
+    height: 320px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid rgba(255,32,32,0.3);
+    box-shadow: 0 0 60px rgba(255,32,32,0.08), 0 0 120px rgba(255,32,32,0.04);
+    position: relative;
+    animation: float 6s ease-in-out infinite;
+    background: #000;
+  }
+  .hero-photo-ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.06);
+    pointer-events: none;
+  }
+  .hero-photo-ring:nth-child(2) {
+    width: 380px;
+    height: 380px;
+  }
+  .hero-photo-ring:nth-child(3) {
+    width: 440px;
+    height: 440px;
+    border-color: rgba(255,32,32,0.06);
+  }
+
+  /* SECTION BASE */
+  section {
+    padding: 80px 48px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .section-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--primary);
+    margin-bottom: 12px;
+  }
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(36px, 5vw, 60px);
+    line-height: 1;
+    letter-spacing: 1px;
+    margin-bottom: 40px;
+  }
+  .section-title em {
+    font-style: normal;
+    color: var(--muted);
+  }
+
+  /* MUESTRAS */
+  .beats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  .beat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+    transition: border-color 0.4s, transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s;
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  .beat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(to right, var(--primary), transparent);
+    opacity: 0.3;
+    transition: opacity 0.3s;
+    z-index: 2;
+  }
+  .beat-card:hover::before {
+    opacity: 0.8;
+  }
+  .beat-card.visible {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.4s, box-shadow 0.4s;
+  }
+  .beat-card:hover {
+    border-color: rgba(255,32,32,0.3);
+    box-shadow: 0 12px 48px rgba(255,32,32,0.08);
+    transform: translateY(-6px);
+  }
+  .beat-card.visible:hover {
+    transform: translateY(-6px);
+  }
+  .beat-video {
+    position: relative;
+    padding-bottom: 56.25%;
+    background: #000;
+  }
+  .beat-video iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
+  .beat-video-placeholder {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a0505 100%);
+    gap: 12px;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  .beat-video-placeholder:hover { background: linear-gradient(135deg, #0d0d0d 0%, #200606 100%); }
+  .play-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  .beat-video-placeholder:hover .play-btn {
+    transform: scale(1.08);
+    box-shadow: 0 0 30px rgba(255,32,32,0.5);
+  }
+  .play-btn svg { width: 20px; height: 20px; fill: #fff; margin-left: 4px; }
+  .beat-genre {
+    font-size: 9px;
+    letter-spacing: 3px;
+    color: var(--primary);
+    text-transform: uppercase;
+  }
+  .beat-info {
+    padding: 14px 16px;
+  }
+  .beat-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: 1px;
+    line-height: 1.1;
+  }
+  .beat-desc {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 4px;
+    line-height: 1.4;
+  }
+  .beat-tags {
+    display: flex;
+    gap: 6px;
+    margin-top: 10px;
+  }
+  .beat-tag {
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    color: var(--primary);
+    background: var(--primary-dim);
+    padding: 4px 10px;
+    border-radius: 2px;
+  }
+  .beat-video.loaded .beat-video-placeholder { display: none; }
+
+  /* PRECIOS */
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+  .price-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 32px 28px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.4s, transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s;
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  .price-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(to right, var(--primary), transparent);
+    opacity: 0.3;
+    transition: opacity 0.3s;
+  }
+  .price-card:hover::before {
+    opacity: 0.8;
+  }
+  .price-card.visible {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.4s, box-shadow 0.4s;
+  }
+  .price-card:hover {
+    border-color: rgba(255,255,255,0.12);
+    transform: translateY(-6px);
+    box-shadow: 0 12px 48px rgba(0,0,0,0.3);
+  }
+  .price-card.visible:hover {
+    transform: translateY(-6px);
+  }
+  .price-card.featured {
+    border-color: rgba(255,32,32,0.25);
+    background: #0d0000;
+    box-shadow: 0 0 40px rgba(255,32,32,0.05);
+  }
+  .price-card.featured::before {
+    background: linear-gradient(to right, var(--primary), rgba(255,32,32,0.4));
+    opacity: 0.6;
+  }
+  .price-card.featured:hover {
+    border-color: rgba(255,32,32,0.5);
+    box-shadow: 0 12px 48px rgba(255,32,32,0.12);
+    transform: translateY(-6px);
+  }
+  .price-card.featured.visible:hover {
+    transform: translateY(-6px);
+  }
+  .price-badge {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--primary);
+    background: var(--primary-dim);
+    padding: 4px 10px;
+    border-radius: 2px;
+    text-transform: uppercase;
+  }
+  .price-icon {
+    font-size: 24px;
+    margin-bottom: 14px;
+    display: block;
+  }
+  .price-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 24px;
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+  }
+  .price-desc {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.6;
+    margin-bottom: 20px;
+  }
+  .price-features {
+    list-style: none;
+    margin-bottom: 24px;
+  }
+  .price-features li {
+    font-size: 12px;
+    color: var(--muted);
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .price-features li:last-child {
+    border-bottom: none;
+  }
+  .price-features li::before {
+    content: '';
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--primary);
+    flex-shrink: 0;
+  }
+  .price-amount {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 40px;
+    color: var(--primary);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .price-amount span {
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    color: var(--muted);
+    font-weight: 400;
+  }
+  .pricing-cta {
+    text-align: center;
+    margin-top: 36px;
+  }
+  .pricing-note {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 12px;
+  }
+  .pricing-note-secondary {
+    margin-top: 24px;
+    padding: 16px 28px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+    text-align: left;
+    max-width: 720px;
+  }
+  .pricing-note-secondary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(to right, var(--primary), transparent);
+    opacity: 0.4;
+  }
+  .pricing-note-secondary span {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.6;
+    display: block;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.6s ease forwards;
+  }
+
+  /* CONTACTO */
+  .contact-section {
+    text-align: center;
+    padding: 80px 48px 100px;
+    position: relative;
+    overflow: hidden;
+    max-width: none;
+  }
+  .contact-section::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 70% 60% at 50% 50%, rgba(255,32,32,0.05) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .contact-big {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(36px, 6vw, 80px);
+    line-height: 1.1;
+    margin-bottom: 16px;
+    position: relative;
+  }
+  .contact-sub {
+    font-size: 15px;
+    color: var(--muted);
+    margin-bottom: 48px;
+    position: relative;
+  }
+  .contact-channels {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 48px;
+    position: relative;
+  }
+  .contact-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 28px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    text-decoration: none;
+    color: var(--text);
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    transition: all 0.25s ease;
+  }
+  .contact-link:hover {
+    border-color: rgba(255,32,32,0.4);
+    background: rgba(255,32,32,0.06);
+    transform: translateY(-2px);
+  }
+  .contact-link svg { width: 18px; height: 18px; fill: currentColor; }
+  .contact-link.whatsapp {
+    background: rgba(37,211,102,0.08);
+    border-color: rgba(37,211,102,0.2);
+  }
+  .contact-link.whatsapp svg { fill: #25D366; }
+  .contact-link.whatsapp:hover {
+    background: rgba(37,211,102,0.15);
+    border-color: rgba(37,211,102,0.4);
+  }
+  .contact-link.instagram {
+    background: rgba(228,64,95,0.08);
+    border-color: rgba(228,64,95,0.2);
+  }
+  .contact-link.instagram svg { fill: #E4405F; }
+  .contact-link.instagram:hover {
+    background: rgba(228,64,95,0.15);
+    border-color: rgba(228,64,95,0.4);
+  }
+  .contact-link.email svg { fill: var(--muted); }
+  .contact-cta { position: relative; }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 32px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: var(--muted);
+    font-size: 12px;
+    letter-spacing: 0.5px;
+  }
+  .footer-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    letter-spacing: 3px;
+    color: var(--text);
+  }
+  .footer-logo span { color: var(--primary); }
+
+  /* DIVIDER */
+  .section-divider {
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--border), transparent);
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(255,32,32,0.4); }
+    50% { box-shadow: 0 0 0 12px rgba(255,32,32,0); }
+  }
+  @keyframes shimmer {
+    0% { background-position: -200% center; }
+    100% { background-position: 200% center; }
+  }
+
+  /* RESPONSIVE */
+
+  @media (max-width: 900px) {
+    .hero-content {
+      grid-template-columns: 1fr;
+      gap: 32px;
+      text-align: center;
+    }
+    .hero-text { text-align: center; }
+    .hero-ctas { justify-content: center; }
+    .hero-genres { justify-content: center; }
+    .hero-photo-frame {
+      width: 200px;
+      height: 200px;
+    }
+    .hero-photo-ring:nth-child(2) {
+      width: 240px;
+      height: 240px;
+    }
+    .hero-photo-ring:nth-child(3) {
+      width: 280px;
+      height: 280px;
+    }
+    .hero-title { font-size: clamp(56px, 15vw, 100px); }
+  }
+
+  @media (max-width: 1024px) {
+    .beats-grid { grid-template-columns: 1fr 1fr; }
+    .pricing-grid { grid-template-columns: 1fr 1fr; }
+    .pricing-grid .price-card:last-child { grid-column: 1 / -1; }
+  }
+
+  @media (max-width: 768px) {
+    nav { padding: 16px 20px; }
+    .nav-links {
+      display: none;
+      position: fixed;
+      top: 64px;
+      left: 0; right: 0;
+      background: rgba(5,5,5,0.98);
+      backdrop-filter: blur(20px);
+      flex-direction: column;
+      gap: 0;
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-links.open { display: flex; }
+    .nav-links a {
+      display: block;
+      padding: 16px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 12px;
+    }
+    .nav-links li:last-child a { border-bottom: none; }
+    .nav-menu-btn { display: block; }
+    section { padding: 48px 20px; }
+    .beats-grid { grid-template-columns: 1fr; gap: 12px; }
+    .pricing-grid { grid-template-columns: 1fr; gap: 12px; }
+    .pricing-grid .price-card:last-child { grid-column: auto; max-width: none; margin: 0; }
+    .contact-section { padding: 48px 20px 64px; }
+    footer { padding: 20px; flex-direction: column; gap: 12px; text-align: center; }
+    .section-title { margin-bottom: 32px; }
+    .hero-genres { gap: 6px; }
+    .hero-genre { font-size: 10px; padding: 5px 12px; }
+    .hero-photo-frame {
+      width: 200px;
+      height: 200px;
+    }
+    .hero-photo-ring:nth-child(2) {
+      width: 240px;
+      height: 240px;
+    }
+    .hero-photo-ring:nth-child(3) {
+      width: 280px;
+      height: 280px;
+    }
+    .whatsapp-float {
+      bottom: 16px;
+      right: 16px;
+      width: 44px;
+      height: 44px;
+    }
+    .whatsapp-float svg {
+      width: 20px;
+      height: 20px;
+    }
+  }
+
+  /* WHATSAPP FLOATING */
+  .whatsapp-float {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 99;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: #25D366;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 20px rgba(37,211,102,0.3);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    text-decoration: none;
+  }
+  .whatsapp-float svg {
+    width: 24px;
+    height: 24px;
+  }
+  .whatsapp-float:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 30px rgba(37,211,102,0.4);
+  }
+
+  /* HAMBURGER */
+  .nav-menu-btn {
+    display: none;
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 8px 12px;
+    border-radius: 2px;
+    cursor: pointer;
+    font-size: 18px;
+    line-height: 1;
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="#" class="nav-logo">PROIIRAPS</a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#muestras">Muestras</a></li>
+    <li><a href="#servicios">Servicios</a></li>
+    <li><a href="#contacto">Contacto</a></li>
+  </ul>
+  <button class="nav-menu-btn" id="menuBtn" aria-label="Menu">☰</button>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="inicio">
+  <div class="hero-bg"></div>
+  <div class="hero-noise"></div>
+  <div class="hero-content">
+    <div class="hero-text">
+      <h1 class="hero-title">PROIIRAPS</h1>
+      <p class="hero-subtitle">Phonk <span class="hero-sub-sep">·</span> Rock <span class="hero-sub-sep">·</span> Metal <span class="hero-sub-sep">·</span> Trap <span class="hero-sub-sep">·</span> Rap</p>
+      <div class="hero-genres">
+        <span class="hero-genre">Phonk</span>
+        <span class="hero-genre">Rock</span>
+        <span class="hero-genre">Metal</span>
+        <span class="hero-genre">Trap</span>
+        <span class="hero-genre">Rap</span>
+      </div>
+      <div class="hero-ctas">
+        <a href="#muestras" class="btn btn-primary">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          Escuchar Muestras
+        </a>
+        <a href="#contacto" class="btn btn-outline">Contactar</a>
+      </div>
+    </div>
+    <div class="hero-photo">
+      <div class="hero-photo-ring"></div>
+      <div class="hero-photo-ring"></div>
+      <div class="hero-photo-frame"></div>
+    </div>
+  </div>
+</section>
+
+<!-- MUESTRAS -->
+<section id="muestras">
+  <p class="section-label">Portfolio</p>
+  <h2 class="section-title">Muestras<br><em>Instrumentales</em></h2>
+
+  <div class="beats-grid">
+
+    <!-- BEAT 1 -->
+    <div class="beat-card" data-animate>
+      <div class="beat-video" id="vid1">
+        <div class="beat-video-placeholder" onclick="loadVideo('vid1','https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1')">
+          <div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+          <span class="beat-genre">Trap</span>
+        </div>
+      </div>
+      <div class="beat-info">
+        <div class="beat-name">SHADOW WAVE</div>
+        <div class="beat-desc">Trap pesado con 808 distorsionadas · 140 BPM</div>
+        <div class="beat-tags">
+          <span class="beat-tag">TRAP</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- BEAT 2 -->
+    <div class="beat-card" data-animate>
+      <div class="beat-video" id="vid2">
+        <div class="beat-video-placeholder" onclick="loadVideo('vid2','https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1')">
+          <div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+          <span class="beat-genre">Phonk</span>
+        </div>
+      </div>
+      <div class="beat-info">
+        <div class="beat-name">FUEGO PHONK</div>
+        <div class="beat-desc">Phonk agresivo con bajos saturados · 128 BPM</div>
+        <div class="beat-tags">
+          <span class="beat-tag">PHONK</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- BEAT 3 -->
+    <div class="beat-card" data-animate>
+      <div class="beat-video" id="vid3">
+        <div class="beat-video-placeholder" onclick="loadVideo('vid3','https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1')">
+          <div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+          <span class="beat-genre">Rock</span>
+        </div>
+      </div>
+      <div class="beat-info">
+        <div class="beat-name">MIDNIGHT LOOP</div>
+        <div class="beat-desc">Rock instrumental con guitarras atmosféricas · 95 BPM</div>
+        <div class="beat-tags">
+          <span class="beat-tag">ROCK</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- BEAT 4 -->
+    <div class="beat-card" data-animate>
+      <div class="beat-video" id="vid4">
+        <div class="beat-video-placeholder" onclick="loadVideo('vid4','https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1')">
+          <div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+          <span class="beat-genre">Metal</span>
+        </div>
+      </div>
+      <div class="beat-info">
+        <div class="beat-name">PALO ALTO</div>
+        <div class="beat-desc">Metal pesado con doble bombo · 96 BPM</div>
+        <div class="beat-tags">
+          <span class="beat-tag">METAL</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- BEAT 5 -->
+    <div class="beat-card" data-animate>
+      <div class="beat-video" id="vid5">
+        <div class="beat-video-placeholder" onclick="loadVideo('vid5','https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1')">
+          <div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+          <span class="beat-genre">Trap</span>
+        </div>
+      </div>
+      <div class="beat-info">
+        <div class="beat-name">COLD NIGHTS</div>
+        <div class="beat-desc">Trap melódico con atmósferas oscuras · 78 BPM</div>
+        <div class="beat-tags">
+          <span class="beat-tag">TRAP</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- BEAT 6 -->
+    <div class="beat-card" data-animate>
+      <div class="beat-video" id="vid6">
+        <div class="beat-video-placeholder" onclick="loadVideo('vid6','https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1')">
+          <div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+          <span class="beat-genre">Rap</span>
+        </div>
+      </div>
+      <div class="beat-info">
+        <div class="beat-name">TROPICAL FIRE</div>
+        <div class="beat-desc">Rap explosivo con bases potentes · 103 BPM</div>
+        <div class="beat-tags">
+          <span class="beat-tag">RAP</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- PRECIOS -->
+<section id="servicios">
+  <p class="section-label">Servicios</p>
+  <h2 class="section-title">Lo que<br><em>ofrezco</em></h2>
+
+  <div class="pricing-grid">
+    <div class="price-card" data-animate>
+      <span class="price-icon">🎵</span>
+      <div class="price-name">Licencia de Instrumental</div>
+      <p class="price-desc">Accedé a cualquier beat del catálogo bajo licencia no exclusiva para tus proyectos.</p>
+      <ul class="price-features">
+        <li>Uso en plataformas digitales</li>
+        <li>Calidad WAV + MP3</li>
+        <li>Stems disponibles</li>
+        <li>Hasta 50.000 distribuciones</li>
+      </ul>
+      <div class="price-amount">$25 <span>USD / beat</span></div>
+    </div>
+
+    <div class="price-card" data-animate>
+      <span class="price-icon">🔊</span>
+      <div class="price-name">Mix y Master</div>
+      <p class="price-desc">Procesamiento profesional para que tu música suene al nivel de las grandes ligas.</p>
+      <ul class="price-features">
+        <li>Mezcla multicanal profesional</li>
+        <li>Masterización final</li>
+        <li>Listo para plataformas</li>
+        <li>1 revisión incluida</li>
+      </ul>
+      <div class="price-amount">$80 <span>USD / canción</span></div>
+    </div>
+
+    <div class="price-card" data-animate>
+      <span class="price-icon">📦</span>
+      <div class="price-name">Instrumental Stems</div>
+      <p class="price-desc">Obtené las pistas individuales de cualquier beat del catálogo para mezclar a tu gusto.</p>
+      <ul class="price-features">
+        <li>Stems WAV 24bit</li>
+        <li>Licencia de uso incluida</li>
+        <li>Hasta 100.000 distribuciones</li>
+        <li>Descarga inmediata</li>
+      </ul>
+      <div class="price-amount">$15 <span>USD / beat</span></div>
+    </div>
+
+    <div class="price-card featured" data-animate>
+      <span class="price-badge">Personalizado</span>
+      <span class="price-icon">🎚️</span>
+      <div class="price-name">Instrumental Personalizado</div>
+      <p class="price-desc">Creación única desde cero con tu estilo y referencias. Ideal para artistas que buscan un sonido propio.</p>
+      <ul class="price-features">
+        <li>Beat exclusivo a medida</li>
+        <li>Sesión de referencia incluida</li>
+        <li>Revisiones ilimitadas</li>
+        <li>Mezcla incluida</li>
+      </ul>
+      <div class="price-amount">A consultar <span>/ proyecto</span></div>
+    </div>
+
+    <div class="price-card featured" data-animate>
+      <span class="price-badge">Recomendado</span>
+      <span class="price-icon">⭐</span>
+      <div class="price-name">Canción Completa</div>
+      <p class="price-desc">Producción integral de tu canción: instrumental, mezcla, master y acompañamiento artístico.</p>
+      <ul class="price-features">
+        <li>Instrumental + Mix + Master</li>
+        <li>Asistencia en composición</li>
+        <li>Stems + proyecto completo</li>
+        <li>Distribución a plataformas</li>
+      </ul>
+      <div class="price-amount">A consultar <span>/ proyecto</span></div>
+    </div>
+  </div>
+
+  <div class="pricing-cta">
+    <a href="#contacto" class="btn btn-primary">Consultar disponibilidad</a>
+    <p class="pricing-note">Respondo en menos de 24h · Precios adaptables según el proyecto</p>
+    <div class="pricing-note-secondary"><span>🟢 Nota: Los precios base pueden ajustarse según la complejidad: número de pistas, variaciones dentro del beat, combinación de géneros.</span></div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- CONTACTO -->
+<section class="contact-section" id="contacto">
+  <p class="section-label" style="position:relative">Contacto</p>
+  <h2 class="contact-big">Trabajemos juntos.</h2>
+  <p class="contact-sub">Sin formularios. Sin esperas. Hablemos directo.</p>
+
+  <div class="contact-channels">
+    <a href="https://wa.me/5491100000000" class="contact-link whatsapp" target="_blank">
+      <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      WhatsApp
+    </a>
+    <a href="https://instagram.com/tuinstagram" class="contact-link instagram" target="_blank">
+      <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+      Instagram
+    </a>
+    <a href="mailto:tucorreo@email.com" class="contact-link email">
+      <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+      Email
+    </a>
+  </div>
+
+  <div class="contact-cta">
+    <a href="https://wa.me/5491100000000" class="btn btn-primary" target="_blank" style="font-size:15px;padding:20px 48px;">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      Contactar ahora
+    </a>
+  </div>
+</section>
+
+<!-- WHATSAPP FLOATING -->
+<a class="whatsapp-float" href="#" aria-label="WhatsApp" target="_blank">
+  <svg viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+</a>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">PROIIRAPS</div>
+  <div>© 2025 · Todos los derechos reservados</div>
+</footer>
+
+<script>
+  // Mobile menu toggle
+  const menuBtn = document.getElementById('menuBtn');
+  const navLinks = document.getElementById('navLinks');
+  if (menuBtn) {
+    menuBtn.addEventListener('click', () => {
+      navLinks.classList.toggle('open');
+      menuBtn.textContent = navLinks.classList.contains('open') ? '✕' : '☰';
+    });
+    navLinks.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        navLinks.classList.remove('open');
+        menuBtn.textContent = '☰';
+      });
+    });
+  }
+
+  // Nav scroll effect
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 60);
+  }, { passive: true });
+
+  // Lazy load video iframes on click
+  function loadVideo(containerId, src) {
+    const container = document.getElementById(containerId);
+    const iframe = document.createElement('iframe');
+    iframe.src = src;
+    iframe.allow = 'autoplay; encrypted-media';
+    iframe.allowFullscreen = true;
+    container.classList.add('loaded');
+    container.appendChild(iframe);
+  }
+
+  // Intersection Observer for scroll animations
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        const siblings = [...entry.target.parentElement.querySelectorAll('[data-animate]')];
+        const idx = siblings.indexOf(entry.target);
+        setTimeout(() => {
+          entry.target.classList.add('visible');
+        }, idx * 100);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('[data-animate]').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
