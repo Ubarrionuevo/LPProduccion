@@ -314,6 +314,17 @@
   }
 
   /* MUESTRAS */
+  .beats-subtitle {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 2px;
+    color: var(--muted);
+    margin-bottom: 16px;
+    margin-top: 48px;
+  }
+  .beats-subtitle:first-of-type {
+    margin-top: 0;
+  }
   .beats-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -370,59 +381,77 @@
   .beat-card.visible:hover {
     transform: translateY(-8px) scale(1.01);
   }
-  .beat-card:hover .beat-name {
-    color: var(--primary);
-  }
-  .beat-card:nth-child(2) { margin-top: 20px; }
-  .beat-card:nth-child(3) { margin-top: 8px; }
-  .beat-card:nth-child(4) { margin-top: 32px; }
-  .beat-card:nth-child(5) { margin-top: -4px; }
-  .beat-card:nth-child(6) { margin-top: 12px; }
-  .beat-video {
+  .beat-visual {
     position: relative;
     padding-bottom: 56.25%;
     background: #000;
+    overflow: hidden;
   }
-  .beat-video iframe {
+  .beat-gif {
     position: absolute;
     inset: 0;
     width: 100%;
     height: 100%;
-    border: none;
+    object-fit: cover;
   }
-  .beat-video-placeholder {
+  .beat-play-btn {
     position: absolute;
-    inset: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(135deg, #0a0a0a 0%, #1a0505 100%);
-    gap: 12px;
-    cursor: pointer;
-    transition: background 0.3s;
-  }
-  .beat-video-placeholder:hover { background: linear-gradient(135deg, #0d0d0d 0%, #200606 100%); }
-  .play-btn {
-    width: 48px;
-    height: 48px;
+    bottom: 12px;
+    right: 12px;
+    width: 44px;
+    height: 44px;
     border-radius: 50%;
     background: var(--primary);
+    border: none;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: transform 0.3s, box-shadow 0.3s;
+    cursor: pointer;
+    transition: transform 0.25s, box-shadow 0.25s;
+    z-index: 2;
   }
-  .beat-video-placeholder:hover .play-btn {
+  .beat-play-btn:hover {
     transform: scale(1.08);
-    box-shadow: 0 0 30px rgba(255,32,32,0.5);
+    box-shadow: 0 0 24px rgba(255,32,32,0.5);
   }
-  .play-btn svg { width: 20px; height: 20px; fill: #fff; margin-left: 4px; }
-  .beat-genre {
-    font-size: 9px;
-    letter-spacing: 3px;
-    color: var(--primary);
+  .beat-play-btn svg {
+    width: 18px;
+    height: 18px;
+    fill: #fff;
+    margin-left: 3px;
+  }
+  .beat-play-btn.playing svg {
+    margin-left: 0;
+  }
+  .beat-versions {
+    display: flex;
+    gap: 8px;
+    padding: 10px 12px 8px;
+    justify-content: center;
+  }
+  .beat-version {
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    color: var(--muted);
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 999px;
+    padding: 6px 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'Inter', sans-serif;
     text-transform: uppercase;
+    font-weight: 600;
+  }
+  .beat-version:hover {
+    border-color: var(--primary);
+    color: var(--text);
+    background: rgba(255,32,32,0.08);
+  }
+  .beat-version.active {
+    background: var(--primary-dim);
+    border-color: var(--primary);
+    color: var(--primary);
   }
   .beat-info {
     padding: 14px 16px;
@@ -439,21 +468,6 @@
     margin-top: 4px;
     line-height: 1.4;
   }
-  .beat-tags {
-    display: flex;
-    gap: 6px;
-    margin-top: 10px;
-  }
-  .beat-tag {
-    font-size: 10px;
-    letter-spacing: 1.5px;
-    color: var(--primary);
-    background: var(--primary-dim);
-    padding: 4px 10px;
-    border-radius: 2px;
-  }
-  .beat-video.loaded .beat-video-placeholder { display: none; }
-
   /* PRECIOS */
   .pricing-grid {
     display: grid;
@@ -706,7 +720,15 @@
     letter-spacing: 3px;
     color: var(--text);
   }
-  .footer-logo span { color: var(--primary); }
+  .footer-copy {
+    margin-right: 32px;
+  }
+  .footer-center {
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    color: var(--muted);
+    opacity: 0.5;
+  }
 
   /* DIVIDER */
   .section-divider {
@@ -825,7 +847,7 @@
       height: 180px;
     }
     .whatsapp-float {
-      bottom: 16px;
+      bottom: 32px;
       right: 16px;
       width: 44px;
       height: 44px;
@@ -839,7 +861,7 @@
   /* WHATSAPP FLOATING */
   .whatsapp-float {
     position: fixed;
-    bottom: 24px;
+    bottom: 48px;
     right: 24px;
     z-index: 99;
     width: 52px;
@@ -920,108 +942,192 @@
   <p class="section-label">Mis tracks</p>
   <h2 class="section-title">Muestras</h2>
 
+  <h3 class="beats-subtitle">Trap &amp; Rap</h3>
   <div class="beats-grid">
 
-    <!-- BEAT 1 -->
+    <!-- TRAGIC LOVE -->
     <div class="beat-card" data-animate>
-      <div class="beat-video" id="vid1">
-        <div class="beat-video-placeholder" onclick="loadVideo('vid1','https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1')">
-          <div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
-          <span class="beat-genre">Trap</span>
-        </div>
+      <div class="beat-visual">
+        <img src="tragic_love.gif" alt="Tragic Love" class="beat-gif">
+        <button class="beat-play-btn" onclick="toggleAudio(this, 'a-tl')">
+          <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        </button>
       </div>
       <div class="beat-info">
-        <div class="beat-name">SHADOW WAVE</div>
-        <div class="beat-desc">Trap pesado con 808 distorsionadas · 140 BPM</div>
-        <div class="beat-tags">
-          <span class="beat-tag">TRAP</span>
-        </div>
+        <div class="beat-name">TRAGIC LOVE</div>
+        <div class="beat-desc">Trap Melódico · 78 BPM</div>
       </div>
+      <audio id="a-tl" src="Tragic_Love_-_Muestra_Portafolio.mp3" preload="none"></audio>
     </div>
 
-    <!-- BEAT 2 -->
+    <!-- THE BEST -->
     <div class="beat-card" data-animate>
-      <div class="beat-video" id="vid2">
-        <div class="beat-video-placeholder" onclick="loadVideo('vid2','https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1')">
-          <div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
-          <span class="beat-genre">Phonk</span>
-        </div>
+      <div class="beat-visual">
+        <img src="the_best.gif" alt="The Best" class="beat-gif">
+        <button class="beat-play-btn" onclick="toggleAudio(this, 'a-tb')">
+          <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        </button>
       </div>
       <div class="beat-info">
-        <div class="beat-name">FUEGO PHONK</div>
-        <div class="beat-desc">Phonk agresivo con bajos saturados · 128 BPM</div>
-        <div class="beat-tags">
-          <span class="beat-tag">PHONK</span>
-        </div>
+        <div class="beat-name">THE BEST</div>
+        <div class="beat-desc">Rap · 103 BPM</div>
       </div>
+      <audio id="a-tb" src="The_Best_-_Muestra_Portafolio.mp3" preload="none"></audio>
     </div>
 
-    <!-- BEAT 3 -->
+    <!-- TRYHARD -->
     <div class="beat-card" data-animate>
-      <div class="beat-video" id="vid3">
-        <div class="beat-video-placeholder" onclick="loadVideo('vid3','https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1')">
-          <div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
-          <span class="beat-genre">Rock</span>
-        </div>
+      <div class="beat-visual">
+        <img src="tryhard.gif" alt="TryHard" class="beat-gif">
+        <button class="beat-play-btn" onclick="toggleAudio(this, 'a-th')">
+          <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        </button>
       </div>
       <div class="beat-info">
-        <div class="beat-name">MIDNIGHT LOOP</div>
-        <div class="beat-desc">Rock instrumental con guitarras atmosféricas · 95 BPM</div>
-        <div class="beat-tags">
-          <span class="beat-tag">ROCK</span>
-        </div>
+        <div class="beat-name">TRYHARD</div>
+        <div class="beat-desc">Trap · 128 BPM</div>
       </div>
+      <audio id="a-th" src="TryHard_-_Muestra_Portafolio.mp3" preload="none"></audio>
     </div>
 
-    <!-- BEAT 4 -->
+    <!-- FREE HUNTRIX -->
     <div class="beat-card" data-animate>
-      <div class="beat-video" id="vid4">
-        <div class="beat-video-placeholder" onclick="loadVideo('vid4','https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1')">
-          <div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
-          <span class="beat-genre">Metal</span>
-        </div>
+      <div class="beat-visual">
+        <img src="free_huntrix.webp" alt="Free Huntrix" class="beat-gif">
+        <button class="beat-play-btn" onclick="toggleAudio(this, 'a-fh')">
+          <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        </button>
       </div>
       <div class="beat-info">
-        <div class="beat-name">PALO ALTO</div>
-        <div class="beat-desc">Metal pesado con doble bombo · 96 BPM</div>
-        <div class="beat-tags">
-          <span class="beat-tag">METAL</span>
-        </div>
+        <div class="beat-name">FREE HUNTRIX</div>
+        <div class="beat-desc">Trap · 95 BPM</div>
       </div>
+      <audio id="a-fh" src="FreeHuntrix_-_Muestra_Portafolio.mp3" preload="none"></audio>
     </div>
 
-    <!-- BEAT 5 -->
+    <!-- ME ENAMOR -->
     <div class="beat-card" data-animate>
-      <div class="beat-video" id="vid5">
-        <div class="beat-video-placeholder" onclick="loadVideo('vid5','https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1')">
-          <div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
-          <span class="beat-genre">Trap</span>
-        </div>
+      <div class="beat-visual">
+        <img src="me_enamor.gif" alt="Me Enamor" class="beat-gif">
+        <button class="beat-play-btn" onclick="toggleAudio(this, 'a-me')">
+          <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        </button>
       </div>
       <div class="beat-info">
-        <div class="beat-name">COLD NIGHTS</div>
-        <div class="beat-desc">Trap melódico con atmósferas oscuras · 78 BPM</div>
-        <div class="beat-tags">
-          <span class="beat-tag">TRAP</span>
-        </div>
+        <div class="beat-name">ME ENAMOR</div>
+        <div class="beat-desc">Rap · 140 BPM</div>
       </div>
+      <audio id="a-me" src="Me_enamor_-_Portafolio.mp3" preload="none"></audio>
     </div>
 
-    <!-- BEAT 6 -->
+    <!-- AMAR SIN SABER -->
     <div class="beat-card" data-animate>
-      <div class="beat-video" id="vid6">
-        <div class="beat-video-placeholder" onclick="loadVideo('vid6','https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1')">
-          <div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
-          <span class="beat-genre">Rap</span>
-        </div>
+      <div class="beat-visual">
+        <img src="amar_sintemer.webp" alt="Amar Sin Saber" class="beat-gif">
+        <button class="beat-play-btn" onclick="toggleAudio(this, 'a-as')">
+          <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        </button>
       </div>
       <div class="beat-info">
-        <div class="beat-name">TROPICAL FIRE</div>
-        <div class="beat-desc">Rap explosivo con bases potentes · 103 BPM</div>
-        <div class="beat-tags">
-          <span class="beat-tag">RAP</span>
-        </div>
+        <div class="beat-name">AMAR SIN SABER</div>
+        <div class="beat-desc">Rap · 100 BPM</div>
       </div>
+      <audio id="a-as" src="Amar_sin_saber_-_Portafolio.mp3" preload="none"></audio>
+    </div>
+
+  </div>
+
+  <h3 class="beats-subtitle">Rock &amp; Metal</h3>
+  <div class="beats-grid">
+
+    <!-- SUPERIOR UNO -->
+    <div class="beat-card" data-animate>
+      <div class="beat-visual">
+        <img src="superior_uno.webp" alt="Superior Uno" class="beat-gif">
+        <button class="beat-play-btn" onclick="toggleAudio(this, 'a-su')">
+          <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+      </div>
+      <div class="beat-info">
+        <div class="beat-name">SUPERIOR UNO</div>
+        <div class="beat-desc">Rock</div>
+      </div>
+      <audio id="a-su" src="KOKUSHIBO_-_Muestra_Portafolio.mp3" preload="none"></audio>
+    </div>
+
+    <!-- VIVIR SIN MIEDO -->
+    <div class="beat-card" data-animate>
+      <div class="beat-visual">
+        <img src="VIVIR_SIN_MIEDO_-.gif" alt="Vivir Sin Miedo" class="beat-gif">
+        <button class="beat-play-btn" onclick="toggleAudio(this, 'a-vsm')">
+          <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+      </div>
+      <div class="beat-info">
+        <div class="beat-name">VIVIR SIN MIEDO</div>
+        <div class="beat-desc">Rock · 120 BPM</div>
+      </div>
+      <audio id="a-vsm" src="VIVIR_SIN_MIEDO_-_Muestra_Portafolio.mp3" preload="none"></audio>
+    </div>
+
+    <!-- KOKUSHIBO -->
+    <div class="beat-card" data-animate>
+      <div class="beat-visual">
+        <img src="KOKUSHIBO.gif" alt="KOKUSHIBO" class="beat-gif">
+        <button class="beat-play-btn" onclick="toggleAudio(this, 'a-ko')">
+          <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+      </div>
+      <div class="beat-info">
+        <div class="beat-name">KOKUSHIBO</div>
+        <div class="beat-desc">Metal · 96 BPM</div>
+      </div>
+      <audio id="a-ko" src="KOKUSHIBO_-_Muestra_Portafolio.mp3" preload="none"></audio>
+    </div>
+
+  </div>
+
+  <h3 class="beats-subtitle">Phonk</h3>
+  <div class="beats-grid">
+
+    <!-- GAROU -->
+    <div class="beat-card" data-animate>
+      <div class="beat-visual">
+        <img src="GAROU_-.gif" alt="GAROU" class="beat-gif">
+        <button class="beat-play-btn" onclick="toggleAudio(this, 'a-ga')">
+          <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+      </div>
+      <div class="beat-info">
+        <div class="beat-name">GAROU</div>
+        <div class="beat-desc">Phonk · 128 BPM</div>
+      </div>
+      <audio id="a-ga" src="GAROU_-_Muestra_Portafolio.mp3" preload="none"></audio>
+    </div>
+
+  </div>
+
+  <h3 class="beats-subtitle">Mix &amp; Master</h3>
+  <div class="beats-grid">
+
+    <!-- AKINNO -->
+    <div class="beat-card" data-animate>
+      <div class="beat-visual">
+        <img src="AKINNO_-_SIN_MEZCL.gif" alt="AKINNO" class="beat-gif">
+        <button class="beat-play-btn" onclick="toggleAudio(this, 'a-ak-con')">
+          <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+      </div>
+      <div class="beat-versions">
+        <span class="beat-version active" onclick="switchVersion(this, 'a-ak-con', 'a-ak-sin')">Con Mezcla</span>
+        <span class="beat-version" onclick="switchVersion(this, 'a-ak-sin', 'a-ak-con')">Sin Mezcla</span>
+      </div>
+      <div class="beat-info">
+        <div class="beat-name">AKINNO</div>
+        <div class="beat-desc">Mix &amp; Master · Demo</div>
+      </div>
+      <audio id="a-ak-con" src="AKINNO_-_CON_MEZCLA.mp3" preload="none"></audio>
+      <audio id="a-ak-sin" src="AKINNO_-_SIN_MEZCLA.mp3" preload="none" style="display:none;"></audio>
     </div>
 
   </div>
@@ -1133,14 +1239,15 @@
 </section>
 
 <!-- WHATSAPP FLOATING -->
-<a class="whatsapp-float" href="#" aria-label="WhatsApp" target="_blank">
+<a class="whatsapp-float" href="https://wa.me/5493858517925" aria-label="WhatsApp" target="_blank">
   <svg viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
 </a>
 
 <!-- FOOTER -->
 <footer>
   <div class="footer-logo">PROIIRAPS</div>
-  <div>© 2025 · Todos los derechos reservados</div>
+  <div class="footer-center">Hecho por Tito ❤️</div>
+  <div class="footer-copy">© 2025 · Todos los derechos reservados</div>
 </footer>
 
 <script>
@@ -1166,15 +1273,42 @@
     nav.classList.toggle('scrolled', window.scrollY > 60);
   }, { passive: true });
 
-  // Lazy load video iframes on click
-  function loadVideo(containerId, src) {
-    const container = document.getElementById(containerId);
-    const iframe = document.createElement('iframe');
-    iframe.src = src;
-    iframe.allow = 'autoplay; encrypted-media';
-    iframe.allowFullscreen = true;
-    container.classList.add('loaded');
-    container.appendChild(iframe);
+  // Toggle audio play/pause
+  let currentAudio = null;
+  let currentBtn = null;
+  function toggleAudio(btn, audioId) {
+    const audio = document.getElementById(audioId);
+    if (currentAudio && currentAudio !== audio) {
+      currentAudio.pause();
+      currentAudio.currentTime = 0;
+      if (currentBtn) currentBtn.classList.remove('playing');
+    }
+    if (audio.paused) {
+      audio.play();
+      btn.classList.add('playing');
+      currentAudio = audio;
+      currentBtn = btn;
+    } else {
+      audio.pause();
+      btn.classList.remove('playing');
+      currentAudio = null;
+      currentBtn = null;
+    }
+  }
+  // Switch AKINNO audio version
+  function switchVersion(btn, activeId, inactiveId) {
+    const card = btn.closest('.beat-card');
+    card.querySelectorAll('.beat-version').forEach(el => el.classList.remove('active'));
+    btn.classList.add('active');
+    const playBtn = card.querySelector('.beat-play-btn');
+    playBtn.setAttribute('onclick', "toggleAudio(this, '" + activeId + "')");
+    const playing = card.querySelector('.beat-play-btn.playing');
+    if (playing) {
+      if (currentAudio) currentAudio.pause();
+      currentAudio = null;
+      currentBtn = null;
+      playing.classList.remove('playing');
+    }
   }
 
   // Intersection Observer for scroll animations
