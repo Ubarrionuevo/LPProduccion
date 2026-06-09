@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+﻿﻿<!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1381,9 +1381,8 @@
 
   // ===== Supabase data loading =====
   (async function() {
-    const SUPABASE_URL = localStorage.getItem('supabase_url');
-    const SUPABASE_KEY = localStorage.getItem('supabase_anon_key');
-    if (!SUPABASE_URL || !SUPABASE_KEY) return;
+    var SUPABASE_URL = 'https://thymsssudfpxhawfkvzt.supabase.co';
+    var SUPABASE_KEY = 'sb_publishable_kcZK5mglKx-15l7VYVMF5Q_f6UMVHi8';
 
     var supabase;
     try {
