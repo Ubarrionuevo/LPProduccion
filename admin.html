@@ -1,0 +1,849 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin â€” PROIIRAPS</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Inter', -apple-system, sans-serif;
+  background: #0a0a0a;
+  color: #e0e0e0;
+  min-height: 100vh;
+}
+input, textarea, select, button { font-family: inherit; font-size: 14px; }
+.container { max-width: 1000px; margin: 0 auto; padding: 24px; }
+
+/* Login */
+.login-box {
+  max-width: 400px; margin: 80px auto; padding: 40px;
+  background: #141414; border-radius: 12px; border: 1px solid #222;
+}
+.login-box h1 { font-size: 24px; margin-bottom: 8px; color: #fff; }
+.login-box p { color: #888; margin-bottom: 24px; font-size: 13px; }
+.login-box input {
+  width: 100%; padding: 12px 16px; margin-bottom: 12px;
+  background: #1e1e1e; border: 1px solid #333; border-radius: 8px;
+  color: #fff; outline: none;
+}
+.login-box input:focus { border-color: #FF2020; }
+.login-box button {
+  width: 100%; padding: 12px; background: #FF2020; color: #fff;
+  border: none; border-radius: 8px; font-size: 15px; font-weight: 600;
+  cursor: pointer; margin-top: 4px;
+}
+.login-box button:hover { background: #e01c1c; }
+.login-box .error { color: #ff4444; font-size: 13px; margin-top: 8px; }
+.setup-box { margin-top: 16px; padding: 16px; background: #1a1a1a; border-radius: 8px; }
+.setup-box label { display: block; font-size: 12px; color: #888; margin-bottom: 4px; margin-top: 12px; }
+.setup-box label:first-child { margin-top: 0; }
+
+/* Header */
+.admin-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 24px; background: #111; border-bottom: 1px solid #222;
+  flex-wrap: wrap; gap: 8px;
+}
+.admin-header h2 { font-size: 18px; color: #fff; }
+.admin-header .right { display: flex; align-items: center; gap: 12px; }
+.admin-header a { color: #FF2020; text-decoration: none; font-size: 12px; }
+.admin-header button {
+  padding: 8px 16px; background: #333; color: #fff;
+  border: none; border-radius: 6px; cursor: pointer; font-size: 12px;
+}
+.admin-header button:hover { background: #444; }
+
+/* Tabs */
+.tabs { display: flex; gap: 0; border-bottom: 1px solid #222; background: #111; flex-wrap: wrap; }
+.tab-btn {
+  padding: 12px 24px; background: none; border: none; color: #888;
+  cursor: pointer; font-size: 13px; border-bottom: 2px solid transparent;
+}
+.tab-btn:hover { color: #fff; }
+.tab-btn.active { color: #FF2020; border-bottom-color: #FF2020; }
+
+/* Content */
+.tab-content { display: none; padding: 24px; }
+.tab-content.active { display: block; }
+
+/* Items */
+.item { background: #141414; border: 1px solid #222; border-radius: 8px; padding: 16px; margin-bottom: 12px; }
+.item-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+.item-header h3 { font-size: 15px; color: #fff; }
+.item-header .badge {
+  display: inline-block; font-size: 10px; padding: 2px 8px;
+  background: #FF2020; color: #fff; border-radius: 4px; margin-left: 8px; vertical-align: middle;
+}
+.item-actions { display: flex; gap: 6px; }
+.item-actions button {
+  padding: 4px 10px; border: none; border-radius: 4px; cursor: pointer; font-size: 11px;
+}
+.btn-edit { background: #2a2a2a; color: #fff; }
+.btn-edit:hover { background: #3a3a3a; }
+.btn-delete { background: #5a1a1a; color: #ff6666; }
+.btn-delete:hover { background: #7a2a2a; }
+.item-meta { font-size: 12px; color: #888; }
+.item-meta span { margin-right: 16px; }
+
+/* Forms */
+.form-overlay {
+  display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+  align-items: center; justify-content: center; z-index: 100;
+}
+.form-overlay.open { display: flex; }
+.form-card {
+  background: #1a1a1a; border: 1px solid #333; border-radius: 12px;
+  padding: 28px; width: 90%; max-width: 560px; max-height: 90vh; overflow-y: auto;
+}
+.form-card h3 { font-size: 18px; margin-bottom: 20px; color: #fff; }
+.form-group { margin-bottom: 14px; }
+.form-group label { display: block; font-size: 12px; color: #888; margin-bottom: 4px; }
+.form-group input, .form-group textarea, .form-group select {
+  width: 100%; padding: 10px 14px; background: #252525; border: 1px solid #333;
+  border-radius: 6px; color: #fff; outline: none;
+}
+.form-group input:focus, .form-group textarea:focus { border-color: #FF2020; }
+.form-group textarea { resize: vertical; min-height: 60px; }
+.form-group .feature-row {
+  display: flex; gap: 8px; margin-bottom: 6px; align-items: center;
+}
+.form-group .feature-row input { flex: 1; }
+.form-group .feature-row button {
+  padding: 6px 10px; background: #5a1a1a; color: #ff6666;
+  border: none; border-radius: 4px; cursor: pointer; font-size: 11px;
+}
+.form-actions { display: flex; gap: 8px; margin-top: 20px; justify-content: flex-end; }
+.form-actions button {
+  padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; font-size: 13px;
+}
+.btn-save { background: #FF2020; color: #fff; }
+.btn-save:hover { background: #e01c1c; }
+.btn-cancel { background: #333; color: #fff; }
+.btn-cancel:hover { background: #444; }
+
+/* Buttons */
+.add-btn {
+  padding: 10px 20px; background: #FF2020; color: #fff;
+  border: none; border-radius: 6px; cursor: pointer; font-size: 13px; margin-bottom: 16px;
+}
+.add-btn:hover { background: #e01c1c; }
+
+/* File upload */
+.file-upload { margin-top: 6px; }
+.file-upload input[type="file"] { display: none; }
+.file-upload label {
+  display: inline-block; padding: 8px 16px; background: #333; color: #fff;
+  border-radius: 6px; cursor: pointer; font-size: 12px;
+}
+.file-upload label:hover { background: #444; }
+.file-upload .filename { font-size: 11px; color: #888; margin-left: 8px; }
+.uploading-text { font-size: 11px; color: #FF2020; margin-left: 8px; }
+
+/* Config */
+.config-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 600px) { .config-grid { grid-template-columns: 1fr; } }
+.config-item { background: #141414; border: 1px solid #222; border-radius: 8px; padding: 14px; }
+.config-item label { display: block; font-size: 11px; color: #888; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+.config-item input { width: 100%; padding: 8px 12px; background: #252525; border: 1px solid #333; border-radius: 6px; color: #fff; outline: none; font-size: 13px; }
+.config-item input:focus { border-color: #FF2020; }
+.config-item button {
+  margin-top: 6px; padding: 6px 14px; background: #FF2020; color: #fff;
+  border: none; border-radius: 4px; cursor: pointer; font-size: 11px;
+}
+
+/* Password change */
+.password-section { margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid #222; }
+
+/* Toast */
+.toast {
+  position: fixed; bottom: 24px; right: 24px; padding: 12px 20px;
+  border-radius: 8px; color: #fff; font-size: 13px; z-index: 200;
+  transform: translateY(100px); opacity: 0; transition: all 0.3s;
+}
+.toast.show { transform: translateY(0); opacity: 1; }
+.toast.success { background: #2e7d32; }
+.toast.error { background: #c62828; }
+
+/* Storage */
+.storage-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; margin-top: 12px; }
+.storage-item { background: #141414; border: 1px solid #222; border-radius: 8px; padding: 8px; text-align: center; }
+.storage-item img { max-width: 100%; height: 80px; object-fit: cover; border-radius: 4px; }
+.storage-item .name { font-size: 10px; color: #888; margin-top: 4px; word-break: break-all; }
+.storage-item button {
+  margin-top: 4px; padding: 3px 8px; background: #5a1a1a; color: #ff6666;
+  border: none; border-radius: 3px; cursor: pointer; font-size: 10px;
+}
+</style>
+</head>
+<body>
+
+<div id="app"></div>
+
+<script>
+// ===== STATE =====
+var supabase = null;
+var loggedIn = false;
+var currentTab = 'config';
+var services = [];
+var beats = [];
+var config = {};
+
+// Rate limiting
+var loginAttempts = [];
+var MAX_ATTEMPTS = 5;
+var BLOCK_WINDOW = 30000;
+var BLOCK_DURATION = 30000;
+var SESSION_TIMEOUT = 30 * 60 * 1000;
+var logoutTimer = null;
+
+// SHA-256 hash
+async function hashPass(str) {
+  var buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(function(b) { return b.toString(16).padStart(2, '0'); }).join('');
+}
+
+function checkRateLimit() {
+  var now = Date.now();
+  loginAttempts = loginAttempts.filter(function(t) { return now - t < BLOCK_WINDOW; });
+  if (loginAttempts.length >= MAX_ATTEMPTS) {
+    var elapsed = now - loginAttempts[0];
+    if (elapsed < BLOCK_DURATION) {
+      return { blocked: true, wait: Math.ceil((BLOCK_DURATION - elapsed) / 1000) };
+    }
+    loginAttempts = [];
+  }
+  return { blocked: false, remaining: MAX_ATTEMPTS - loginAttempts.length };
+}
+
+function resetLogoutTimer() {
+  if (logoutTimer) clearTimeout(logoutTimer);
+  logoutTimer = setTimeout(function() {
+    showToast('SesiÃ³n expirada por inactividad.', 'error');
+    logout();
+  }, SESSION_TIMEOUT);
+}
+
+function escapeHtml(str) {
+  if (!str) return '';
+  var d = document.createElement('div');
+  d.appendChild(document.createTextNode(str));
+  return d.innerHTML;
+}
+
+function showToast(msg, type) {
+  var t = document.createElement('div');
+  t.className = 'toast ' + type;
+  t.textContent = msg;
+  document.body.appendChild(t);
+  requestAnimationFrame(function() { t.classList.add('show'); });
+  setTimeout(function() { t.classList.remove('show'); setTimeout(function() { t.remove(); }, 400); }, 3000);
+}
+
+// ===== INIT =====
+async function init() {
+  var url = localStorage.getItem('supabase_url');
+  var key = localStorage.getItem('supabase_anon_key');
+  if (!url || !key) {
+    document.getElementById('app').innerHTML = renderSetup();
+    return;
+  }
+  try {
+    var mod = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
+    supabase = mod.createClient(url, key);
+    checkPassword();
+  } catch(e) {
+    document.getElementById('app').innerHTML = renderSetup();
+    document.getElementById('s-error').textContent = 'Error al cargar Supabase: ' + e.message;
+  }
+}
+
+function renderSetup() {
+  return '\
+<div class="login-box">\
+  <h1>Configurar Supabase</h1>\
+  <p>IngresÃ¡ las credenciales de tu proyecto.</p>\
+  <div class="setup-box">\
+    <label>Project URL</label>\
+    <input id="s-url" placeholder="https://xxxxx.supabase.co">\
+    <label>Anon Public Key</label>\
+    <input id="s-key" placeholder="sb_publishable_... o eyJ...">\
+    <button onclick="saveKeys()">Guardar</button>\
+    <p class="error" id="s-error"></p>\
+  </div>\
+</div>';
+}
+
+async function saveKeys() {
+  var url = document.getElementById('s-url').value.trim();
+  var key = document.getElementById('s-key').value.trim();
+  if (!url || !key) { document.getElementById('s-error').textContent = 'CompletÃ¡ ambos campos.'; return; }
+  localStorage.setItem('supabase_url', url);
+  localStorage.setItem('supabase_anon_key', key);
+  document.getElementById('s-error').textContent = 'Conectando...';
+  await init();
+}
+
+// ===== PASSWORD AUTH =====
+function checkPassword() {
+  supabase.from('site_config').select('value').eq('key', 'admin_password').single().then(function(resp) {
+    if (resp.error || !resp.data) {
+      // No password set yet â†’ show setup prompt
+      document.getElementById('app').innerHTML = renderSetPassword();
+      return;
+    }
+    var storedPw = resp.data.value;
+    if (!storedPw) {
+      document.getElementById('app').innerHTML = renderSetPassword();
+      return;
+    }
+    // Check session storage for logged in state
+    var session = sessionStorage.getItem('admin_session');
+    if (session === 'true') {
+      loggedIn = true;
+      loadData();
+    } else {
+      document.getElementById('app').innerHTML = renderLogin();
+    }
+  });
+}
+
+function renderLogin() {
+  var rl = checkRateLimit();
+  var disabled = rl.blocked ? ' disabled' : '';
+  var extra = '';
+  if (rl.blocked) {
+    extra = '<p style="color:#ff6644;font-size:12px;margin-top:8px">Demasiados intentos. EsperÃ¡ ' + rl.wait + ' segundos.</p>';
+  } else if (rl.remaining <= 2) {
+    extra = '<p style="color:#ffaa44;font-size:12px;margin-top:8px">Quedan ' + rl.remaining + ' intentos.</p>';
+  }
+  return '\
+<div class="login-box">\
+  <h1>Admin</h1>\
+  <p>IngresÃ¡ la contraseÃ±a para acceder al panel.</p>\
+  <input id="login-pass" type="password" placeholder="ContraseÃ±a" onkeydown="if(event.key===\'Enter\')login()"' + (rl.blocked ? '' : '') + '>\
+  <button onclick="login()"' + disabled + '>Ingresar</button>\
+  <p class="error" id="login-error"></p>' + extra + '\
+</div>';
+}
+
+function renderSetPassword() {
+  return '\
+<div class="login-box">\
+  <h1>Crear contraseÃ±a</h1>\
+  <p>Primer ingreso. ElegÃ­ una contraseÃ±a para el admin.</p>\
+  <input id="sp-pass" type="password" placeholder="Nueva contraseÃ±a" onkeydown="if(event.key===\'Enter\')setPassword()">\
+  <input id="sp-pass2" type="password" placeholder="Repetir contraseÃ±a" onkeydown="if(event.key===\'Enter\')setPassword()">\
+  <button onclick="setPassword()">Crear</button>\
+  <p class="error" id="sp-error"></p>\
+</div>';
+}
+
+async function login() {
+  var pass = document.getElementById('login-pass').value;
+  if (!pass) { document.getElementById('login-error').textContent = 'IngresÃ¡ la contraseÃ±a.'; return; }
+  var rl = checkRateLimit();
+  if (rl.blocked) { document.getElementById('login-error').textContent = 'EsperÃ¡ ' + rl.wait + ' segundos.'; return; }
+  var resp = await supabase.from('site_config').select('value').eq('key', 'admin_password').single();
+  if (resp.error || !resp.data) {
+    document.getElementById('login-error').textContent = 'Error al verificar contraseÃ±a.';
+    return;
+  }
+  var stored = resp.data.value;
+  var matched = false;
+  // Check if stored is hashed (prefixed with $2$)
+  if (stored.indexOf('$2$') === 0) {
+    var inputHash = await hashPass(pass);
+    matched = inputHash === stored.replace('$2$', '');
+  } else {
+    // Plain text comparison (legacy), upgrade on success
+    matched = stored === pass;
+  }
+  if (matched) {
+    loginAttempts = [];
+    // Upgrade to hashed if still plain text
+    if (stored.indexOf('$2$') !== 0) {
+      var hashed = '$2$' + await hashPass(pass);
+      supabase.from('site_config').update({ value: hashed }).eq('key', 'admin_password').then();
+    }
+    sessionStorage.setItem('admin_session', 'true');
+    loggedIn = true;
+    resetLogoutTimer();
+    loadData();
+  } else {
+    loginAttempts.push(Date.now());
+    var remaining = checkRateLimit();
+    if (remaining.blocked) {
+      showToast('Demasiados intentos. EsperÃ¡ ' + remaining.wait + ' segundos.', 'error');
+    }
+    document.getElementById('login-error').textContent = 'ContraseÃ±a incorrecta.' + (remaining.remaining ? ' Quedan ' + remaining.remaining + ' intentos.' : '');
+  }
+}
+
+async function setPassword() {
+  var p1 = document.getElementById('sp-pass').value;
+  var p2 = document.getElementById('sp-pass2').value;
+  if (!p1 || p1.length < 4) { document.getElementById('sp-error').textContent = 'MÃ­nimo 4 caracteres.'; return; }
+  if (p1 !== p2) { document.getElementById('sp-error').textContent = 'Las contraseÃ±as no coinciden.'; return; }
+  var hashed = '$2$' + await hashPass(p1);
+  var resp = await supabase.from('site_config').select('value').eq('key', 'admin_password').single();
+  if (resp.data && resp.data.value) {
+    document.getElementById('sp-error').textContent = 'Ya existe una contraseÃ±a. IngresÃ¡ con ella.';
+    return;
+  }
+  var r;
+  if (resp.data) {
+    r = await supabase.from('site_config').update({ value: hashed }).eq('key', 'admin_password');
+  } else {
+    r = await supabase.from('site_config').insert({ key: 'admin_password', value: hashed });
+  }
+  if (r.error) { document.getElementById('sp-error').textContent = r.error.message; return; }
+  loginAttempts = [];
+  sessionStorage.setItem('admin_session', 'true');
+  loggedIn = true;
+  resetLogoutTimer();
+  loadData();
+}
+
+function logout() {
+  if (logoutTimer) clearTimeout(logoutTimer);
+  logoutTimer = null;
+  sessionStorage.removeItem('admin_session');
+  loggedIn = false;
+  document.getElementById('app').innerHTML = renderLogin();
+}
+
+// ===== DATA LOADING =====
+function loadData() {
+  Promise.all([
+    loadConfig(),
+    supabase.from('services').select('*').order('sort_order'),
+    supabase.from('beats').select('*').order('sort_order')
+  ]).then(function(results) {
+    services = results[1].data || [];
+    beats = results[2].data || [];
+    resetLogoutTimer();
+    document.getElementById('app').innerHTML = renderDashboard();
+  }).catch(function(err) {
+    document.getElementById('app').innerHTML = renderDashboard();
+    showToast('Error al cargar datos: ' + err.message, 'error');
+  });
+}
+
+function loadConfig() {
+  return supabase.from('site_config').select('key,value').then(function(resp) {
+    if (resp.data) {
+      config = {};
+      resp.data.forEach(function(c) { config[c.key] = c.value; });
+    }
+  });
+}
+
+// ===== RENDER DASHBOARD =====
+function renderDashboard() {
+  return '\
+<div class="admin-header">\
+  <h2>âš¡ Admin â€” PROIIRAPS</h2>\
+  <div class="right">\
+    <a href="/" target="_blank">Ver sitio â†’</a>\
+    <button onclick="logout()">Salir</button>\
+  </div>\
+</div>\
+<div class="tabs">\
+  <button class="tab-btn' + (currentTab === 'config' ? ' active' : '') + '" onclick="switchTab(\'config\')">ConfiguraciÃ³n</button>\
+  <button class="tab-btn' + (currentTab === 'services' ? ' active' : '') + '" onclick="switchTab(\'services\')">Servicios</button>\
+  <button class="tab-btn' + (currentTab === 'beats' ? ' active' : '') + '" onclick="switchTab(\'beats\')">Muestras</button>\
+  <button class="tab-btn' + (currentTab === 'storage' ? ' active' : '') + '" onclick="switchTab(\'storage\')">Archivos</button>\
+</div>\
+<div class="container">\
+  <div class="tab-content' + (currentTab === 'config' ? ' active' : '') + '" id="tab-config">' + renderConfig() + '</div>\
+  <div class="tab-content' + (currentTab === 'services' ? ' active' : '') + '" id="tab-services">' + renderServices() + '</div>\
+  <div class="tab-content' + (currentTab === 'beats' ? ' active' : '') + '" id="tab-beats">' + renderBeats() + '</div>\
+  <div class="tab-content' + (currentTab === 'storage' ? ' active' : '') + '" id="tab-storage">' + renderStorage() + '</div>\
+</div>\
+<div class="form-overlay" id="form-overlay"></div>';
+}
+
+// ===== CONFIG TAB =====
+function renderConfig() {
+  var cfg = config;
+  var keys = Object.keys(cfg).filter(function(k) { return k !== 'admin_password'; });
+  if (keys.length === 0) return '<p style="color:#888;font-size:13px">No hay configuraciÃ³n cargada.</p>';
+  var html = '<div class="password-section"><h3 style="color:#fff;font-size:15px;margin-bottom:8px">ðŸ”‘ ContraseÃ±a del admin</h3><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><input id="new-admin-pass" type="password" placeholder="Nueva contraseÃ±a" style="padding:8px 12px;background:#252525;border:1px solid #333;border-radius:6px;color:#fff;outline:none;font-size:13px"><button onclick="changePassword()" style="padding:8px 16px;background:#FF2020;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:12px">Cambiar</button></div></div>';
+  html += '<div class="config-grid">';
+  keys.forEach(function(key) {
+    var val = cfg[key] || '';
+    var label = key.replace(/_/g, ' ').replace(/\b\w/g, function(c) { return c.toUpperCase(); });
+    html += '\
+<div class="config-item">\
+  <label>' + escapeHtml(label) + '</label>\
+  <input id="cfg-' + key + '" value="' + escapeHtml(val) + '">\
+  <button onclick="saveConfig(\'' + key + '\')">Guardar</button>\
+</div>';
+  });
+  html += '</div>';
+  return html;
+}
+
+async function changePassword() {
+  var p = document.getElementById('new-admin-pass').value;
+  if (!p || p.length < 4) { showToast('MÃ­nimo 4 caracteres.', 'error'); return; }
+  var hashed = '$2$' + await hashPass(p);
+  var resp = await supabase.from('site_config').update({ value: hashed }).eq('key', 'admin_password');
+  if (resp.error) { showToast('Error: ' + resp.error.message, 'error'); return; }
+  showToast('ContraseÃ±a actualizada âœ“', 'success');
+  document.getElementById('new-admin-pass').value = '';
+}
+
+function saveConfig(key) {
+  var val = document.getElementById('cfg-' + key).value.trim();
+  supabase.from('site_config').update({ value: val }).eq('key', key).then(function(resp) {
+    if (resp.error) { showToast('Error: ' + resp.error.message, 'error'); return; }
+    config[key] = val;
+    showToast('Guardado âœ“', 'success');
+  });
+}
+
+// ===== SERVICES =====
+function renderServices() {
+  var html = '<button class="add-btn" onclick="openServiceForm()">+ Nuevo Servicio</button>';
+  if (services.length === 0) html += '<p style="color:#888;font-size:13px">No hay servicios.</p>';
+  services.forEach(function(svc, i) {
+    var features = svc.features || [];
+    html += '\
+<div class="item">\
+  <div class="item-header">\
+    <h3>' + escapeHtml(svc.name) + (svc.badge ? ' <span class="badge">' + escapeHtml(svc.badge) + '</span>' : '') + '</h3>\
+    <div class="item-actions">\
+      <button class="btn-edit" onclick="openServiceForm(' + i + ')">Editar</button>\
+      <button class="btn-delete" onclick="deleteService(' + i + ')">Eliminar</button>\
+    </div>\
+  </div>\
+  <div class="item-meta">' + escapeHtml(svc.price_label) + ' ' + escapeHtml(svc.price_unit) + '</div>\
+  <div class="item-meta" style="margin-top:4px">' + escapeHtml(svc.description.slice(0, 80)) + (svc.description.length > 80 ? '...' : '') + '</div>\
+  <div class="item-meta" style="margin-top:4px">' + features.length + ' caracterÃ­sticas</div>\
+</div>';
+  });
+  return html;
+}
+
+function openServiceForm(idx) {
+  var svc = (idx !== undefined && idx >= 0) ? services[idx] : null;
+  var overlay = document.getElementById('form-overlay');
+  var features = svc ? (svc.features || []).slice() : [];
+  var html = '\
+<div class="form-card">\
+  <h3>' + (svc ? 'Editar Servicio' : 'Nuevo Servicio') + '</h3>\
+  <div class="form-group">\
+    <label>Nombre</label>\
+    <input id="f-svc-name" value="' + (svc ? escapeHtml(svc.name) : '') + '">\
+  </div>\
+  <div class="form-group">\
+    <label>DescripciÃ³n</label>\
+    <textarea id="f-svc-desc">' + (svc ? escapeHtml(svc.description) : '') + '</textarea>\
+  </div>\
+  <div class="form-group">\
+    <label>Badge (opcional)</label>\
+    <input id="f-svc-badge" value="' + (svc ? escapeHtml(svc.badge || '') : '') + '" placeholder="Ej: Recomendado">\
+  </div>\
+  <div class="form-group">\
+    <label>Precio</label>\
+    <input id="f-svc-price" value="' + (svc ? escapeHtml(svc.price_label) : '') + '" placeholder="Ej: $25">\
+  </div>\
+  <div class="form-group">\
+    <label>Unidad</label>\
+    <input id="f-svc-unit" value="' + (svc ? escapeHtml(svc.price_unit) : '') + '" placeholder="Ej: USD / beat">\
+  </div>\
+  <div class="form-group">\
+    <label>Feature (destacado)</label>\
+    <select id="f-svc-featured">\
+      <option value="false"' + (svc && svc.featured ? '' : ' selected') + '>No</option>\
+      <option value="true"' + (svc && svc.featured ? ' selected' : '') + '>SÃ­</option>\
+    </select>\
+  </div>\
+  <div class="form-group">\
+    <label>CaracterÃ­sticas</label>\
+    <div id="f-svc-features"></div>\
+    <button onclick="addFeature()" style="padding:6px 12px;background:#252525;color:#fff;border:1px solid #333;border-radius:4px;cursor:pointer;font-size:11px;margin-top:4px">+ Agregar</button>\
+  </div>\
+  <div class="form-actions">\
+    <button class="btn-cancel" onclick="closeForm()">Cancelar</button>\
+    <button class="btn-save" onclick="saveService(' + (svc ? idx : 'null') + ')">Guardar</button>\
+  </div>\
+</div>';
+  overlay.innerHTML = html;
+  overlay.classList.add('open');
+  window._svcFeatures = features;
+  renderFeatures();
+  window._editingIdx = idx;
+}
+
+function addFeature() { window._svcFeatures.push(''); renderFeatures(); }
+function removeFeature(idx) { window._svcFeatures.splice(idx, 1); renderFeatures(); }
+function updateFeature(idx, val) { if (idx >= 0 && idx < window._svcFeatures.length) window._svcFeatures[idx] = val; }
+
+function renderFeatures() {
+  var container = document.getElementById('f-svc-features');
+  if (!container) return;
+  container.innerHTML = '';
+  window._svcFeatures.forEach(function(f, fi) {
+    var div = document.createElement('div');
+    div.className = 'feature-row';
+    div.innerHTML = '<input value="' + escapeHtml(f) + '" onchange="updateFeature(' + fi + ', this.value)"><button onclick="removeFeature(' + fi + ')">âœ•</button>';
+    container.appendChild(div);
+  });
+}
+
+function saveService(idx) {
+  var data = {
+    name: document.getElementById('f-svc-name').value.trim(),
+    description: document.getElementById('f-svc-desc').value.trim(),
+    badge: document.getElementById('f-svc-badge').value.trim(),
+    price_label: document.getElementById('f-svc-price').value.trim(),
+    price_unit: document.getElementById('f-svc-unit').value.trim(),
+    featured: document.getElementById('f-svc-featured').value === 'true',
+    features: window._svcFeatures || [],
+    sort_order: idx !== null && idx >= 0 ? services[idx].sort_order : services.length + 1
+  };
+  if (!data.name) { showToast('El nombre es obligatorio.', 'error'); return; }
+  var req;
+  if (idx !== null && idx >= 0) {
+    req = supabase.from('services').update(data).eq('id', services[idx].id);
+  } else {
+    req = supabase.from('services').insert(data);
+  }
+  req.then(function(resp) {
+    if (resp.error) { showToast('Error: ' + resp.error.message, 'error'); return; }
+    showToast('Guardado âœ“', 'success');
+    closeForm();
+    loadData();
+  });
+}
+
+function deleteService(idx) {
+  if (!confirm('Â¿Eliminar "' + services[idx].name + '"?')) return;
+  supabase.from('services').delete().eq('id', services[idx].id).then(function(resp) {
+    if (resp.error) { showToast('Error: ' + resp.error.message, 'error'); return; }
+    showToast('Eliminado âœ“', 'success');
+    loadData();
+  });
+}
+
+// ===== BEATS =====
+function renderBeats() {
+  var html = '<button class="add-btn" onclick="openBeatForm()">+ Nueva Muestra</button>';
+  if (beats.length === 0) html += '<p style="color:#888;font-size:13px">No hay muestras.</p>';
+  beats.forEach(function(beat, i) {
+    html += '\
+<div class="item">\
+  <div class="item-header">\
+    <h3>' + escapeHtml(beat.name) + (beat.is_akinnno ? ' <span class="badge">AKINNO</span>' : '') + '</h3>\
+    <div class="item-actions">\
+      <button class="btn-edit" onclick="openBeatForm(' + i + ')">Editar</button>\
+      <button class="btn-delete" onclick="deleteBeat(' + i + ')">Eliminar</button>\
+    </div>\
+  </div>\
+  <div class="item-meta"><span>CategorÃ­a: ' + escapeHtml(beat.category) + '</span><span>' + escapeHtml(beat.description) + '</span></div>\
+  <div class="item-meta"><span>GIF: ' + escapeHtml(beat.gif_url) + '</span></div>\
+</div>';
+  });
+  return html;
+}
+
+function openBeatForm(idx) {
+  var beat = (idx !== undefined && idx >= 0) ? beats[idx] : null;
+  var overlay = document.getElementById('form-overlay');
+  var html = '\
+<div class="form-card">\
+  <h3>' + (beat ? 'Editar Muestra' : 'Nueva Muestra') + '</h3>\
+  <div class="form-group">\
+    <label>Nombre</label>\
+    <input id="f-beat-name" value="' + (beat ? escapeHtml(beat.name) : '') + '">\
+  </div>\
+  <div class="form-group">\
+    <label>CategorÃ­a</label>\
+    <select id="f-beat-cat">\
+      <option value="Trap & Rap"' + (beat && beat.category === 'Trap & Rap' ? ' selected' : '') + '>Trap & Rap</option>\
+      <option value="Rock & Metal"' + (beat && beat.category === 'Rock & Metal' ? ' selected' : '') + '>Rock & Metal</option>\
+      <option value="Phonk"' + (beat && beat.category === 'Phonk' ? ' selected' : '') + '>Phonk</option>\
+      <option value="Mix & Master"' + (beat && beat.category === 'Mix & Master' ? ' selected' : '') + '>Mix & Master</option>\
+    </select>\
+  </div>\
+  <div class="form-group">\
+    <label>DescripciÃ³n (ej: Trap Â· 95 BPM)</label>\
+    <input id="f-beat-desc" value="' + (beat ? escapeHtml(beat.description) : '') + '">\
+  </div>\
+  <div class="form-group">\
+    <label>URL del GIF / WebP</label>\
+    <input id="f-beat-gif" value="' + (beat ? escapeHtml(beat.gif_url) : '') + '" placeholder="Subilo en Archivos y pegÃ¡ la URL">\
+  </div>\
+  <div class="form-group">\
+    <label>URL del Audio (MP3)</label>\
+    <input id="f-beat-audio" value="' + (beat ? escapeHtml(beat.audio_url) : '') + '" placeholder="Subilo en Archivos y pegÃ¡ la URL">\
+  </div>\
+  <div class="form-group">\
+    <label>VersiÃ³n dual (como AKINNO)</label>\
+    <select id="f-beat-akinnno" onchange="toggleAltAudio()">\
+      <option value="false"' + (beat && beat.is_akinnno ? '' : ' selected') + '>No</option>\
+      <option value="true"' + (beat && beat.is_akinnno ? ' selected' : '') + '>SÃ­</option>\
+    </select>\
+  </div>\
+  <div class="form-group" id="f-beat-alt-group" style="' + (beat && beat.is_akinnno ? '' : 'display:none') + '">\
+    <label>URL del Audio alternativo</label>\
+    <input id="f-beat-audio-alt" value="' + (beat && beat.is_akinnno ? escapeHtml(beat.audio_url_alt || '') : '') + '">\
+  </div>\
+  <div class="form-group" id="f-beat-alt-label-group" style="' + (beat && beat.is_akinnno ? '' : 'display:none') + '">\
+    <label>Etiqueta alternativa (ej: Sin Mezcla)</label>\
+    <input id="f-beat-alt-label" value="' + (beat && beat.is_akinnno ? escapeHtml(beat.alt_label || 'Sin Mezcla') : 'Sin Mezcla') + '">\
+  </div>\
+  <div class="form-actions">\
+    <button class="btn-cancel" onclick="closeForm()">Cancelar</button>\
+    <button class="btn-save" onclick="saveBeat(' + (beat ? idx : 'null') + ')">Guardar</button>\
+  </div>\
+</div>';
+  overlay.innerHTML = html;
+  overlay.classList.add('open');
+}
+
+function toggleAltAudio() {
+  var val = document.getElementById('f-beat-akinnno').value;
+  document.getElementById('f-beat-alt-group').style.display = val === 'true' ? '' : 'none';
+  document.getElementById('f-beat-alt-label-group').style.display = val === 'true' ? '' : 'none';
+}
+
+function saveBeat(idx) {
+  var isAk = document.getElementById('f-beat-akinnno').value === 'true';
+  var data = {
+    name: document.getElementById('f-beat-name').value.trim(),
+    category: document.getElementById('f-beat-cat').value,
+    description: document.getElementById('f-beat-desc').value.trim(),
+    gif_url: document.getElementById('f-beat-gif').value.trim(),
+    audio_url: document.getElementById('f-beat-audio').value.trim(),
+    is_akinnno: isAk,
+    audio_url_alt: isAk ? document.getElementById('f-beat-audio-alt').value.trim() : '',
+    alt_label: isAk ? document.getElementById('f-beat-alt-label').value.trim() : '',
+    sort_order: idx !== null && idx >= 0 ? beats[idx].sort_order : beats.length + 1
+  };
+  if (!data.name || !data.gif_url || !data.audio_url) {
+    showToast('Nombre, GIF y Audio son obligatorios.', 'error');
+    return;
+  }
+  var req;
+  if (idx !== null && idx >= 0) {
+    req = supabase.from('beats').update(data).eq('id', beats[idx].id);
+  } else {
+    req = supabase.from('beats').insert(data);
+  }
+  req.then(function(resp) {
+    if (resp.error) { showToast('Error: ' + resp.error.message, 'error'); return; }
+    showToast('Guardado âœ“', 'success');
+    closeForm();
+    loadData();
+  });
+}
+
+function deleteBeat(idx) {
+  if (!confirm('Â¿Eliminar "' + beats[idx].name + '"?')) return;
+  supabase.from('beats').delete().eq('id', beats[idx].id).then(function(resp) {
+    if (resp.error) { showToast('Error: ' + resp.error.message, 'error'); return; }
+    showToast('Eliminado âœ“', 'success');
+    loadData();
+  });
+}
+
+// ===== STORAGE =====
+function renderStorage() {
+  return '\
+<div style="margin-bottom:16px">\
+  <p style="font-size:13px;color:#888;margin-bottom:12px">SubÃ­ archivos (GIF, WebP, MP3) para usar en las muestras.</p>\
+  <div class="file-upload">\
+    <label for="storage-upload">ðŸ“ Subir archivo</label>\
+    <input type="file" id="storage-upload" onchange="uploadFile(this)">\
+    <span class="uploading-text" id="upload-status"></span>\
+  </div>\
+</div>\
+<div class="storage-grid" id="storage-grid"></div>';
+}
+
+function switchTab(tab) {
+  currentTab = tab;
+  document.getElementById('app').innerHTML = renderDashboard();
+  if (tab === 'storage') setTimeout(loadStorageFiles, 50);
+}
+
+function loadStorageFiles() {
+  var grid = document.getElementById('storage-grid');
+  if (!grid) return;
+  grid.innerHTML = '<p style="color:#888;font-size:13px">Cargando...</p>';
+  supabase.storage.from('media').list().then(function(resp) {
+    if (resp.error) {
+      grid.innerHTML = '<p style="color:#888;font-size:13px">Bucket "media" no encontrado. Crealo desde el Dashboard de Supabase.</p>';
+      return;
+    }
+    if (!resp.data || resp.data.length === 0) {
+      grid.innerHTML = '<p style="color:#888;font-size:13px">No hay archivos subidos.</p>';
+      return;
+    }
+    var html = '';
+    resp.data.forEach(function(file) {
+      var url = supabase.storage.from('media').getPublicUrl(file.name).data.publicUrl;
+      var isImage = /\.(gif|webp|png|jpg|jpeg)$/i.test(file.name);
+      html += '\
+<div class="storage-item">\
+  ' + (isImage ? '<img src="' + url + '" alt="' + escapeHtml(file.name) + '">' : '<div style="height:80px;display:flex;align-items:center;justify-content:center;color:#555;font-size:11px">ðŸ”Š</div>') + '\
+  <div class="name">' + escapeHtml(file.name) + '</div>\
+  <button onclick="copyUrl(\'' + escapeHtml(url) + '\')">Copiar URL</button>\
+  <button onclick="deleteFile(\'' + escapeHtml(file.name) + '\')">Eliminar</button>\
+</div>';
+    });
+    grid.innerHTML = html;
+  });
+}
+
+function uploadFile(input) {
+  var file = input.files[0];
+  if (!file) return;
+  var status = document.getElementById('upload-status');
+  status.textContent = 'Subiendo...';
+  supabase.storage.from('media').upload(file.name, file, { upsert: true }).then(function(resp) {
+    if (resp.error) { status.textContent = 'Error: ' + resp.error.message; return; }
+    status.textContent = 'âœ“ Subido';
+    input.value = '';
+    loadStorageFiles();
+    setTimeout(function() { status.textContent = ''; }, 2000);
+  });
+}
+
+function deleteFile(name) {
+  if (!confirm('Â¿Eliminar "' + name + '"?')) return;
+  supabase.storage.from('media').remove([name]).then(function(resp) {
+    if (resp.error) { showToast('Error: ' + resp.error.message, 'error'); return; }
+    showToast('Archivo eliminado âœ“', 'success');
+    loadStorageFiles();
+  });
+}
+
+function copyUrl(url) {
+  navigator.clipboard.writeText(url).then(function() {
+    showToast('URL copiada âœ“', 'success');
+  }).catch(function() {
+    var ta = document.createElement('textarea');
+    ta.value = url;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    ta.remove();
+    showToast('URL copiada âœ“', 'success');
+  });
+}
+
+function closeForm() {
+  document.getElementById('form-overlay').classList.remove('open');
+}
+
+// ===== START =====
+document.getElementById('app').innerHTML = '<div class="login-box"><p style="color:#888">Cargando...</p></div>';
+init();
+</script>
+</body>
+</html>
