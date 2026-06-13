@@ -1,4 +1,4 @@
-﻿﻿﻿﻿<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -462,13 +462,18 @@ function renderDashboard() {
 }
 
 // ===== CONFIG TAB =====
+var CONFIG_KEYS = [
+  'hero_title', 'hero_subtitle', 'hero_descripcion', 'hero_bio', 'hero_image', 'hero_texto_secundario',
+  'cta_principal', 'cta_presupuesto', 'cta_escuchar', 'btn_escribime', 'btn_presupuesto',
+  'muestras_label', 'muestras_title', 'servicios_label', 'servicios_title',
+  'whatsapp_number', 'instagram_url', 'facebook_url', 'discord_user', 'email'
+];
+
 function renderConfig() {
   var cfg = config;
-  var keys = Object.keys(cfg).filter(function(k) { return k !== 'admin_password'; });
-  if (keys.length === 0) return '<p style="color:#888;font-size:13px">No hay configuración cargada.</p>';
-  var html = '<div class="password-section"><h3 style="color:#fff;font-size:15px;margin-bottom:8px">     Contraseña del admin</h3><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><input id="new-admin-pass" type="password" placeholder="Nueva contraseña" style="padding:8px 12px;background:#252525;border:1px solid #333;border-radius:6px;color:#fff;outline:none;font-size:13px"><button onclick="changePassword()" style="padding:8px 16px;background:#FF2020;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:12px">Cambiar</button></div></div>';
+  var html = '<div class="password-section"><h3 style="color:#fff;font-size:15px;margin-bottom:8px"> Contraseña del admin</h3><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><input id="new-admin-pass" type="password" placeholder="Nueva contraseña" style="padding:8px 12px;background:#252525;border:1px solid #333;border-radius:6px;color:#fff;outline:none;font-size:13px"><button onclick="changePassword()" style="padding:8px 16px;background:#FF2020;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:12px">Cambiar</button></div></div>';
   html += '<div class="config-grid">';
-  keys.forEach(function(key) {
+  CONFIG_KEYS.forEach(function(key) {
     var val = cfg[key] || '';
     var label = key.replace(/_/g, ' ').replace(/\b\w/g, function(c) { return c.toUpperCase(); });
     html += '\
@@ -494,7 +499,7 @@ async function changePassword() {
 
 function saveConfig(key) {
   var val = document.getElementById('cfg-' + key).value.trim();
-  supabase.from('site_config').update({ value: val }).eq('key', key).then(function(resp) {
+  supabase.from('site_config').upsert({ key: key, value: val }, { onConflict: 'key' }).then(function(resp) {
     if (resp.error) { showToast('Error: ' + resp.error.message, 'error'); return; }
     config[key] = val;
     showToast('Guardado ✓', 'success');
@@ -634,7 +639,7 @@ function renderBeats() {
     html += '\
 <div class="item">\
   <div class="item-header">\
-    <h3>' + escapeHtml(beat.name) + (beat.is_akinnno ? ' <span class="badge">AKINNO</span>' : '') + '</h3>\
+    <h3>' + escapeHtml(beat.name) + (beat.status === 'sold' ? ' <span class="badge" style="background:#5a1a1a;color:#ff6666">Vendido</span>' : ' <span class="badge" style="background:#1a3a1a;color:#66cc66">Disponible</span>') + (beat.is_akinnno ? ' <span class="badge">AKINNO</span>' : '') + '</h3>\
     <div class="item-actions">\
       <button class="btn-edit" onclick="openBeatForm(' + i + ')">Editar</button>\
       <button class="btn-delete" onclick="deleteBeat(' + i + ')">Eliminar</button>\
@@ -693,6 +698,13 @@ function openBeatForm(idx) {
     <label>Etiqueta alternativa (ej: Sin Mezcla)</label>\
     <input id="f-beat-alt-label" value="' + (beat && beat.is_akinnno ? escapeHtml(beat.alt_label || 'Sin Mezcla') : 'Sin Mezcla') + '">\
   </div>\
+  <div class="form-group">\
+    <label>Estado de licencia</label>\
+    <select id="f-beat-status">\
+      <option value="available"' + (beat && beat.status === 'available' ? ' selected' : '') + '>Licencia Disponible</option>\
+      <option value="sold"' + (beat && beat.status === 'sold' ? ' selected' : '') + '>Vendido</option>\
+    </select>\
+  </div>\
   <div class="form-actions">\
     <button class="btn-cancel" onclick="closeForm()">Cancelar</button>\
     <button class="btn-save" onclick="saveBeat(' + (beat ? idx : 'null') + ')">Guardar</button>\
@@ -719,6 +731,7 @@ function saveBeat(idx) {
     is_akinnno: isAk,
     audio_url_alt: isAk ? document.getElementById('f-beat-audio-alt').value.trim() : '',
     alt_label: isAk ? document.getElementById('f-beat-alt-label').value.trim() : '',
+    status: document.getElementById('f-beat-status').value,
     sort_order: idx !== null && idx >= 0 ? beats[idx].sort_order : beats.length + 1
   };
   if (!data.name || !data.gif_url || !data.audio_url) {

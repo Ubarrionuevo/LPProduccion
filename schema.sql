@@ -13,10 +13,25 @@ CREATE TABLE site_config (
 
 -- Seed default config
 INSERT INTO site_config (key, value) VALUES
-  ('hero_image', ''),
+  ('hero_title', 'PORTFOLIO'),
+  ('hero_subtitle', 'Producción Musical • Mixing • Mastering'),
+  ('hero_descripcion', 'Producción Musical • Mixing • Mastering'),
+  ('hero_texto_secundario', 'Guitarra, bajo y teclado al servicio de tu visión.'),
+  ('btn_escribime', 'Escribime'),
+  ('btn_presupuesto', 'Pedime presupuesto'),
+  ('cta_principal', 'Escribime'),
+  ('cta_presupuesto', 'Pedime presupuesto'),
+  ('cta_escuchar', 'Escuchar Muestras'),
   ('hero_bio', 'Beatmaker y multi-instrumentista con dominio en FL Studio y Reaper. Guitarra, bajo y teclado al servicio de tu visión.'),
+  ('hero_image', ''),
+  ('muestras_label', 'Mis tracks'),
+  ('muestras_title', 'Muestras'),
+  ('servicios_label', 'Servicios'),
+  ('servicios_title', 'Lo que <em>hago</em>'),
   ('whatsapp_number', '5493858517925'),
   ('instagram_url', 'https://instagram.com/tuinstagram'),
+  ('facebook_url', 'https://www.facebook.com/proii.raps.5'),
+  ('discord_user', 'ProiiRaps'),
   ('email', 'tucorreo@email.com'),
   ('admin_password', 'admin123');
 
@@ -54,22 +69,22 @@ CREATE TABLE beats (
   is_akinnno boolean DEFAULT false,
   audio_url_alt text DEFAULT '',
   alt_label text DEFAULT '',
+  status text DEFAULT 'available',
   created_at timestamptz DEFAULT now()
 );
 
 -- Seed beats
-INSERT INTO beats (name, category, description, gif_url, audio_url, sort_order, is_akinnno, audio_url_alt, alt_label) VALUES
-  ('TRAGIC LOVE', 'Trap & Rap', 'Trap Melódico · 78 BPM', 'tragic_love.gif', 'Tragic_Love_-_Muestra_Portafolio.mp3', 1, false, '', ''),
-  ('THE BEST', 'Trap & Rap', 'Rap · 103 BPM', 'the_best.gif', 'The_Best_-_Muestra_Portafolio.mp3', 2, false, '', ''),
-  ('TRYHARD', 'Trap & Rap', 'Trap · 128 BPM', 'tryhard.gif', 'TryHard_-_Muestra_Portafolio.mp3', 3, false, '', ''),
-  ('FREE HUNTRIX', 'Trap & Rap', 'Trap · 95 BPM', 'free_huntrix.webp', 'FreeHuntrix_-_Muestra_Portafolio.mp3', 4, false, '', ''),
-  ('ME ENAMOR', 'Trap & Rap', 'Rap · 140 BPM', 'me_enamor.gif', 'Me_enamor_-_Portafolio.mp3', 5, false, '', ''),
-  ('AMAR SIN SABER', 'Trap & Rap', 'Rap · 100 BPM', 'amar_sintemer.webp', 'Amar_sin_saber_-_Portafolio.mp3', 6, false, '', ''),
-  ('SUPERIOR UNO', 'Rock & Metal', 'Rock', 'superior_uno.webp', 'KOKUSHIBO_-_Muestra_Portafolio.mp3', 7, false, '', ''),
-  ('VIVIR SIN MIEDO', 'Rock & Metal', 'Rock · 120 BPM', 'VIVIR_SIN_MIEDO_-.gif', 'VIVIR_SIN_MIEDO_-_Muestra_Portafolio.mp3', 8, false, '', ''),
-  ('KOKUSHIBO', 'Rock & Metal', 'Metal · 96 BPM', 'KOKUSHIBO.gif', 'KOKUSHIBO_-_Muestra_Portafolio.mp3', 9, false, '', ''),
-  ('GAROU', 'Phonk', 'Phonk · 128 BPM', 'GAROU_-.gif', 'GAROU_-_Muestra_Portafolio.mp3', 10, false, '', ''),
-  ('AKINNO', 'Mix & Master', 'Mix & Master · Demo', 'AKINNO_-_SIN_MEZCL.gif', 'AKINNO_-_CON_MEZCLA.mp3', 11, true, 'AKINNO_-_SIN_MEZCLA.mp3', 'Sin Mezcla');
+INSERT INTO beats (name, category, description, gif_url, audio_url, sort_order, is_akinnno, audio_url_alt, alt_label, status) VALUES
+  ('TRAGIC LOVE', 'Trap & Rap', 'Trap Melódico · 78 BPM', 'tragic_love.gif', 'Tragic_Love_-_Muestra_Portafolio.mp3', 1, false, '', '', 'available'),
+  ('THE BEST', 'Trap & Rap', 'Rap · 103 BPM', 'the_best.gif', 'The_Best_-_Muestra_Portafolio.mp3', 2, false, '', '', 'available'),
+  ('TRYHARD', 'Trap & Rap', 'Trap · 128 BPM', 'tryhard.gif', 'TryHard_-_Muestra_Portafolio.mp3', 3, false, '', '', 'available'),
+  ('FREE HUNTRIX', 'Trap & Rap', 'Trap · 95 BPM', 'free_huntrix.webp', 'FreeHuntrix_-_Muestra_Portafolio.mp3', 4, false, '', '', 'available'),
+  ('ME ENAMOR', 'Trap & Rap', 'Rap · 140 BPM', 'me_enamor.gif', 'Me_enamor_-_Portafolio.mp3', 5, false, '', '', 'sold'),
+  ('AMAR SIN SABER', 'Trap & Rap', 'Rap · 100 BPM', 'amar_sintemer.webp', 'Amar_sin_saber_-_Portafolio.mp3', 6, false, '', '', 'sold'),
+  ('SUPERIOR UNO', 'Rock & Metal', 'Rock', 'superior_uno.webp', 'KOKUSHIBO_-_Muestra_Portafolio.mp3', 7, false, '', '', 'sold'),
+  ('VIVIR SIN MIEDO', 'Rock & Metal', 'Rock · 120 BPM', 'VIVIR_SIN_MIEDO_-.gif', 'VIVIR_SIN_MIEDO_-_Muestra_Portafolio.mp3', 8, false, '', '', 'sold'),
+  ('GAROU', 'Phonk', 'Phonk · 128 BPM', 'GAROU_-.gif', 'GAROU_-_Muestra_Portafolio.mp3', 9, false, '', '', 'sold'),
+  ('AKINNO', 'Mix & Master', 'Mix & Master · Demo', 'AKINNO_-_SIN_MEZCL.gif', 'AKINNO_-_CON_MEZCLA.mp3', 10, true, 'AKINNO_-_SIN_MEZCLA.mp3', 'Sin Mezcla', 'available');
 
 -- 4. Disable RLS (usamos anon key + password propio, no Supabase Auth)
 ALTER TABLE site_config DISABLE ROW LEVEL SECURITY;
