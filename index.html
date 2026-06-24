@@ -940,9 +940,8 @@
     <div class="hero-text">
       <h1 class="hero-title" id="hero-title">PORTFOLIO</h1>
       <p class="hero-subtitle" id="hero-subtitle">Producción Musical • Mixing • Mastering</p>
-      <p class="hero-bio">Beatmaker y multi-instrumentista con dominio en <img src="flstudio.png" alt="FL Studio" class="inline-logo"> y <img src="mega.jpg" alt="Mega" class="inline-logo">.
-        <br
-        <p>Guitarra, bajo y teclado al servicio de tu visión</p>
+      <p class="hero-bio">Beatmaker y multi-instrumentista con dominio en <img src="flstudio.png" alt="FL Studio" class="inline-logo"> y <img src="mega.jpg" alt="Mega" class="inline-logo">.</p>
+      <p class="hero-bio" id="hero-bio-secondary">Guitarra, bajo y teclado al servicio de tu visión.</p>
       <div class="hero-ctas mt-20">
         <a href="#muestras" class="btn btn-primary" id="btn-escuchar">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
@@ -1374,50 +1373,35 @@
       });
     }
 
+    function setText(id, val) {
+      if (!val) return;
+      var el = document.getElementById(id);
+      if (el) el.textContent = val;
+    }
+
     async function loadConfig() {
       const { data } = await supabase.from('site_config').select('key,value');
       if (!data) return;
       const cfg = {};
       data.forEach(c => { cfg[c.key] = c.value; });
 
-      if (cfg.hero_title) {
-        document.getElementById('hero-title').textContent = cfg.hero_title;
-      }
-      // Hero descripcion (new name) or hero_subtitle (old name)
+      setText('hero-title', cfg.hero_title);
       var desc = cfg.hero_descripcion || cfg.hero_subtitle;
-      if (desc) {
-        document.getElementById('hero-subtitle').textContent = desc;
-      }
-      if (cfg.hero_texto_secundario) {
-        document.getElementById('hero-bio-secondary').textContent = cfg.hero_texto_secundario;
-      }
-      // CTA principal (new name) or btn_escribime (old name)
+      setText('hero-subtitle', desc);
+      setText('hero-bio-secondary', cfg.hero_texto_secundario);
       var cta = cfg.cta_principal || cfg.btn_escribime;
       if (cta) {
-        var el = document.getElementById('btn-escribime');
-        if (el) el.textContent = cta;
-        el = document.getElementById('cta-principal');
-        if (el) el.textContent = cta;
+        setText('btn-escribime', cta);
+        setText('cta-principal', cta);
       }
-      // CTA presupuesto (new name) or btn_presupuesto (old name)
-      var pres = cfg.cta_presupuesto || cfg.btn_presupuesto;
-      if (pres) {
-        document.getElementById('btn-presupuesto').textContent = pres;
-      }
-      if (cfg.cta_escuchar) {
-        document.getElementById('btn-escuchar').textContent = cfg.cta_escuchar;
-      }
-      if (cfg.muestras_label) {
-        document.getElementById('muestras-label').textContent = cfg.muestras_label;
-      }
-      if (cfg.muestras_title) {
-        document.getElementById('muestras-title').textContent = cfg.muestras_title;
-      }
-      if (cfg.servicios_label) {
-        document.getElementById('servicios-label').textContent = cfg.servicios_label;
-      }
+      setText('btn-presupuesto', cfg.cta_presupuesto || cfg.btn_presupuesto);
+      setText('btn-escuchar', cfg.cta_escuchar);
+      setText('muestras-label', cfg.muestras_label);
+      setText('muestras-title', cfg.muestras_title);
+      setText('servicios-label', cfg.servicios_label);
       if (cfg.servicios_title) {
-        document.getElementById('servicios-title').innerHTML = cfg.servicios_title;
+        var el = document.getElementById('servicios-title');
+        if (el) el.innerHTML = cfg.servicios_title;
       }
       if (cfg.whatsapp_number) {
         const href = 'https://wa.me/' + cfg.whatsapp_number.replace(/[^0-9]/g, '');
