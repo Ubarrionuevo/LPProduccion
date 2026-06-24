@@ -89,3 +89,12 @@ INSERT INTO beats (name, category, description, gif_url, audio_url, sort_order, 
 ALTER TABLE site_config DISABLE ROW LEVEL SECURITY;
 ALTER TABLE services DISABLE ROW LEVEL SECURITY;
 ALTER TABLE beats DISABLE ROW LEVEL SECURITY;
+
+-- 5. Storage bucket "media" — permitir subida/lectura pública
+INSERT INTO storage.buckets (id, name, public) VALUES ('media', 'media', true)
+ON CONFLICT (id) DO NOTHING;
+DROP POLICY IF EXISTS "Public Access" ON storage.objects;
+CREATE POLICY "Public Access"
+  ON storage.objects FOR ALL
+  USING (bucket_id = 'media')
+  WITH CHECK (bucket_id = 'media');
