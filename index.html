@@ -940,7 +940,7 @@
     <div class="hero-text">
       <h1 class="hero-title" id="hero-title">PORTFOLIO</h1>
       <p class="hero-subtitle" id="hero-subtitle">Producción Musical • Mixing • Mastering</p>
-      <p class="hero-bio">Beatmaker y multi-instrumentista con dominio en <img src="flstudio.png" alt="FL Studio" class="inline-logo"> y <img src="mega.jpg" alt="Mega" class="inline-logo">.</p>
+      <p class="hero-bio" id="hero-bio-primary">Beatmaker y multi-instrumentista con dominio en <img src="flstudio.png" alt="FL Studio" class="inline-logo"> y <img src="mega.jpg" alt="Mega" class="inline-logo">.</p>
       <p class="hero-bio" id="hero-bio-secondary">Guitarra, bajo y teclado al servicio de tu visión.</p>
       <div class="hero-ctas mt-20">
         <a href="#muestras" class="btn btn-primary" id="btn-escuchar">
@@ -1388,6 +1388,10 @@
       setText('hero-title', cfg.hero_title);
       var desc = cfg.hero_descripcion || cfg.hero_subtitle;
       setText('hero-subtitle', desc);
+      if (cfg.hero_bio) {
+        var el = document.getElementById('hero-bio-primary');
+        if (el) el.innerHTML = cfg.hero_bio;
+      }
       setText('hero-bio-secondary', cfg.hero_texto_secundario);
       var cta = cfg.cta_principal || cfg.btn_escribime;
       if (cta) {
@@ -1414,7 +1418,8 @@
         document.querySelectorAll('[data-facebook]').forEach(el => el.href = cfg.facebook_url);
       }
       if (cfg.discord_user) {
-        document.getElementById('discord-label').textContent = cfg.discord_user;
+        var el = document.getElementById('discord-label');
+        if (el) el.textContent = cfg.discord_user;
       }
       if (cfg.email) {
         document.querySelectorAll('[data-email]').forEach(el => el.href = 'mailto:' + cfg.email);
