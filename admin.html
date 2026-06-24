@@ -151,6 +151,12 @@ input, textarea, select, button { font-family: inherit; font-size: 14px; }
   margin-top: 6px; padding: 6px 14px; background: #FF2020; color: #fff;
   border: none; border-radius: 4px; cursor: pointer; font-size: 11px;
 }
+.config-section { margin-bottom: 28px; }
+.config-section-title {
+  font-size: 13px; font-weight: 600; color: #FF2020; text-transform: uppercase;
+  letter-spacing: 1px; margin-bottom: 12px; padding-bottom: 6px;
+  border-bottom: 1px solid #222;
+}
 
 /* Password change */
 .password-section { margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid #222; }
@@ -462,28 +468,46 @@ function renderDashboard() {
 }
 
 // ===== CONFIG TAB =====
-var CONFIG_KEYS = [
-  'hero_title', 'hero_subtitle', 'hero_descripcion', 'hero_bio', 'hero_texto_secundario',
-  'cta_principal', 'cta_presupuesto', 'cta_escuchar', 'btn_escribime', 'btn_presupuesto',
-  'muestras_label', 'muestras_title', 'servicios_label', 'servicios_title',
-  'whatsapp_number', 'instagram_url', 'facebook_url', 'discord_user', 'email'
+var CONFIG_SECTIONS = [
+  {
+    title: 'Hero / Home',
+    keys: ['hero_title', 'hero_subtitle', 'hero_descripcion', 'hero_bio', 'hero_texto_secundario']
+  },
+  {
+    title: 'Botones / CTAs',
+    keys: ['cta_principal', 'cta_presupuesto', 'cta_escuchar', 'btn_escribime', 'btn_presupuesto']
+  },
+  {
+    title: 'Muestras',
+    keys: ['muestras_label', 'muestras_title']
+  },
+  {
+    title: 'Servicios',
+    keys: ['servicios_label', 'servicios_title']
+  },
+  {
+    title: 'Contacto / Redes',
+    keys: ['whatsapp_number', 'instagram_url', 'facebook_url', 'discord_user', 'email']
+  }
 ];
 
 function renderConfig() {
   var cfg = config;
   var html = '<div class="password-section"><h3 style="color:#fff;font-size:15px;margin-bottom:8px"> Contraseña del admin</h3><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><input id="new-admin-pass" type="password" placeholder="Nueva contraseña" style="padding:8px 12px;background:#252525;border:1px solid #333;border-radius:6px;color:#fff;outline:none;font-size:13px"><button onclick="changePassword()" style="padding:8px 16px;background:#FF2020;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:12px">Cambiar</button></div></div>';
-  html += '<div class="config-grid">';
-  CONFIG_KEYS.forEach(function(key) {
-    var val = cfg[key] || '';
-    var label = key.replace(/_/g, ' ').replace(/\b\w/g, function(c) { return c.toUpperCase(); });
-    html += '\
+  CONFIG_SECTIONS.forEach(function(section) {
+    html += '<div class="config-section"><div class="config-section-title">' + section.title + '</div><div class="config-grid">';
+    section.keys.forEach(function(key) {
+      var val = cfg[key] || '';
+      var label = key.replace(/_/g, ' ').replace(/\b\w/g, function(c) { return c.toUpperCase(); });
+      html += '\
 <div class="config-item">\
   <label>' + escapeHtml(label) + '</label>\
   <input id="cfg-' + key + '" value="' + escapeHtml(val) + '">\
   <button onclick="saveConfig(\'' + key + '\')">Guardar</button>\
 </div>';
+    });
+    html += '</div></div>';
   });
-  html += '</div>';
   return html;
 }
 
