@@ -22,7 +22,7 @@ INSERT INTO site_config (key, value) VALUES
   ('cta_principal', 'Escribime'),
   ('cta_presupuesto', 'Pedime presupuesto'),
   ('cta_escuchar', 'Escuchar Muestras'),
-  ('hero_bio', 'Beatmaker y multi-instrumentista con dominio en <img src="flstudio.png" alt="FL Studio" class="inline-logo"> y <img src="mega.jpg" alt="Mega" class="inline-logo">. Guitarra, bajo y teclado al servicio de tu visión.'),
+  ('hero_bio', 'Beatmaker y multi-instrumentista con dominio en <img src="flstudio.png" alt="FL Studio" class="inline-logo"> y <img src="ableton_macos_bigsur_icon_190476.png" alt="Ableton" class="inline-logo">. Guitarra, bajo y teclado al servicio de tu visión.'),
   ('muestras_label', 'Mis tracks'),
   ('muestras_title', 'Muestras'),
   ('servicios_label', 'Servicios'),
